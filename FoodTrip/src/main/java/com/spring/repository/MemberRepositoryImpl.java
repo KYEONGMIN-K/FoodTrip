@@ -56,7 +56,17 @@ public class MemberRepositoryImpl implements MemberRepository {
 		
 	}
 	
+	// 회원정보 수정하기 : Update
+	public void setUpdateMember(Member member) {
+		System.out.println("setUpdateMember() 실행 : 회원 수정 ");
+		System.out.println("이메일 : " + member.getEmail());
+		String SQL = "UPDATE MEMBER SET password=?, nickName=?, gender=?, age=?, badge=? where email=?";
+		template.update(SQL, member.getPassword(), member.getNickName(), member.getGender(), member.getAge(), member.getBadgeName(), member.getEmail());
+	}
 	
-	
-	
+	public void setDeleteMember(String email) {
+		System.out.println("setDeleteMember()실행 이메일 : " + email);
+		String SQL = "DELETE FROM Member WHERE email = ?";
+		template.update(SQL, email);
+	}
 }

@@ -8,4 +8,8 @@ public interface MemberRepository {
 	Member getOneMember(Member member);
 
 	void setNewMember(Member member);
+
+	void setUpdateMember(Member member);
+
+	void setDeleteMember(String email);
 }
