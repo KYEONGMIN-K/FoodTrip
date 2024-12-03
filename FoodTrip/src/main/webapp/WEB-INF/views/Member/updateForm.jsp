@@ -14,12 +14,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link href="/FoodTrip/resources/css/bootstrap.min.css" rel="stylesheet"/>
 <title>Insert title here</title>
 </head>
 <body>
 	<h1>회원수정</h1>
 	<form:form modelAttribute="updateMember" method="post">
-		<p>이메일 : <input type="text" value="<%=mb.getEmail()%>" readonly> 
+		<p>이메일 : <form:input path="email" value="<%=mb.getEmail()%>" readonly="true"/> 
 		<p>비밀번호 : <form:input path="password" value="<%=mb.getPassword() %>"/>
 		<p>닉네임 : <form:input path="nickName" value="<%=mb.getNickName()%>" />
 		<p>성별 : <div>
@@ -28,6 +29,7 @@
 				</div>
 		<p>나이 : <form:input type="number" value="<%=mb.getAge() %>" path="age"/>
 		<p>	<input type="submit" value="수정">
+			<a href="delete?email=<%=mb.getEmail()%>" class="btn btn-danger">삭제</a>
 	</form:form>
 </body>
 </html>

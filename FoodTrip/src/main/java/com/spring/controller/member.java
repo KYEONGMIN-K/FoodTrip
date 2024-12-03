@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.domain.Member;
 import com.spring.service.MemberService;
@@ -26,13 +27,13 @@ public class member {
 	@GetMapping("/login")
 	public String loginForm(@ModelAttribute("mem") Member member) {
 		System.out.println("loginForm()실행 : 로그인 폼 제공");
-		return "login";
+		return "/Member/login";
 	}
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "redirect:test";
+		return "redirect:/test";
 	}
 	
 	// 계정 확인 : Read
@@ -47,7 +48,7 @@ public class member {
 		
 		if(members==null) {	
 			model.addAttribute("error","true");
-			return "login";
+			return "Member/login";
 		}
 		session = request.getSession(true);
 		session.setAttribute("sessionId", members);
@@ -60,7 +61,7 @@ public class member {
 	@GetMapping("/addMember")
 	public String addMember(@ModelAttribute("addMem")Member member) {
 		System.out.println("addMember()실행 : 회원가입 폼 제공");
-		return "addMember";
+		return "/Member/addMember";
 	}
 	
 	// 회원 생성 : Create
@@ -82,7 +83,7 @@ public class member {
 		System.out.println("updateForm() 실행 : 수정 폼 제공");
 		Member oneMember = memberService.getOneMember(member);
 		model.addAttribute("member", member);
-		return "updateForm";
+		return "/Member/updateForm";
 	}
 	
 	// 회원 정보 수정 : Update
@@ -93,7 +94,13 @@ public class member {
 		return "redirect:/test";
 	}
 	
-	
-	
+	// 회원 삭제 : Delete
+	@GetMapping("/delete")
+	public String deleteMember(Model model, @RequestParam("email") String email,HttpSession session) {
+		System.out.println("deleteMember() 실행 : 회원 삭제 // 이메일 : " + email);
+		memberService.setDeleteMember(email);
+		session.invalidate();
+		return "redirect:/test";
+	}
 	
 }
