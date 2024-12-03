@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 INDEX VERSION 1.4+D:\LSH\[Project]FoodTrip\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
 4022090197.index
 1389418535.index
@@ -5,3 +6,10 @@ INDEX VERSION 1.4+D:\LSH\[Project]FoodTrip\.metadata\.plugins\org.eclipse.wst.js
 2186524849.index
 2034383266.index
 1945826719.index
+=======
+INDEX VERSION 1.4+D:\KKM\FoodTrip_develop_KM\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3429933193.index
+2108084389.index
+2154255283.index
+358912966.index
+>>>>>>> 824c85975b1402df6c40d1e15e88a1123021b04a
