@@ -1,0 +1,11 @@
+package com.spring.controller;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class welcome {
+
+	public String welcome(){
+		return "index";
+	}
+}

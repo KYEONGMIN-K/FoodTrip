@@ -1,0 +1,5 @@
+INDEX VERSION 1.134
+D:\KKM\FoodTrip\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1418988925.index
+\FoodTrip\src\main\resources
+D:\KKM\FoodTrip\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1285539971.index
+\FoodTrip\src\main\java
