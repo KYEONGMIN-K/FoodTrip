@@ -23,4 +23,12 @@ public class MemberServiceImpl implements MemberService{
 	public void setNewMember(Member member) {
 		memberRepository.setNewMember(member);
 	}
+	
+	public void setUpdateMember(Member member) {
+		memberRepository.setUpdateMember(member);
+	}
+	
+	public void setDeleteMember(String email) {
+		memberRepository.setDeleteMember(email);
+	}
 }
