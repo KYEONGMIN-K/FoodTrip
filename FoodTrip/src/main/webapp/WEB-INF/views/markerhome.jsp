@@ -8,6 +8,8 @@
 </head>
 <body>
 	<a href="create">마커 생성</a>
+	<a href="test">마커 테스트</a>
 	<a href="readall">마커 전체 가져오기</a>
+	<a href="readalljson">마커 전체 가져오기</a>
 </body>
 </html>
