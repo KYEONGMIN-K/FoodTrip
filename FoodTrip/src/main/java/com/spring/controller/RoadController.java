@@ -13,9 +13,9 @@ public class RoadController {
 		return "roadhome";
 	}
 
-	@GetMapping("/create")
+	@GetMapping("/makeRoad")
 	public String createRoad() {
-		return "road/roadcreate";
+		return "road/roadForm";
 	}
 	
 	@GetMapping("/readall")

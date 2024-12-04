@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<a href="makeRoad">지도 생성</a>
 </body>
 </html>

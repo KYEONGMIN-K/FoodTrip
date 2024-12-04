@@ -54,7 +54,7 @@
 	        <div class="option">
 	            <div>
 	                <form onsubmit="searchPlaces(); return false;">
-	                    키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
+	                    키워드 : <input type="text" id="keyword" size="15"> 
 	                    <button type="submit">검색하기</button> 
 	                </form>
 	            </div>
@@ -65,45 +65,46 @@
 	    </div>
 	</div>
 	<div>
-		<form:form modelAttribute="NewMarker" encType="multipart/form-data">
+		<form>
 			<p>
 				<label>마커ID</label>
-				<form:input path="markerId" id="markerId"/>
+				<input id="markerId"/>
 			</p>
 			<p>
 				<label>좌표 X</label>
-			<form:input path="pointX" id="pointX"/>
+				<input id="pointX"/>
 			<p>
 				<label>좌표 Y</label>
-			<form:input path="pointY" id="pointY"/>
+				<input id="pointY"/>
 			<p>
 				<label>카테고리</label>
-			<form:input path="category" id="category"/>
+				<input id="category"/>
 			<p>
 				<label>장소명</label>
-			<form:input path="pointName" id="pointName"/>
+				<input id="pointName"/>
 			<p>
 				<label>전화번호</label>
-			<form:input path="phone" id="phone"/>
+				<input id="phone"/>
 			<p>
 				<label>주소</label>
-			<form:input path="address" id="address"/>
+				<input id="address"/>
 			<p>
 				<label>정보보기</label>
 				<a href="#" id="urlData" target="_blank">정보보기</a>
 			<p>
 				<label>장소설명</label>
-				<form:textarea id="description" path="description" col="50" row="20"/>
+				<textarea id="description" col="50" row="20"></textarea>
 			<p>
 				<label>장소이미지</label>
-			<form:input id="image" path="image" type="file"/>
+				<input id="image" type="file"/>
 			
 			<input type="submit" value="등록" />
 			<button id="sendData">전송</button>
-		</form:form>
+		</form>
 	</div>
 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=본인KEY입력&libraries=services"></script>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script>
 	
 	// input 태그 
@@ -117,11 +118,13 @@
 	var urldata = document.querySelector("#urlData");
 	var desc = document.querySelector("#description");
 	var send = document.querySelector("#sendData");
-	
+	var insertKeyword = document.querySelector("#keyword");
+	var saveKeyword;
 	// 마커를 담을 배열입니다
 	var markers = [];
 	//dto 매핑 객체
 	var dtoObj ={
+			"inputdata":"",
 			"markerId":"",
 			"pointX":"",
 			"pointY":"",
@@ -134,7 +137,7 @@
 	
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	    mapOption = {
-	        center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+	        center: new kakao.maps.LatLng(35.2538433, 128.6402609), // 지도의 중심좌표
 	        level: 3 // 지도의 확대 레벨
 	    };  
 
@@ -150,20 +153,24 @@
 	
 	//이벤트 할당
 	send.addEventListener('click', sendData);
+	
+	
+	//setInsertKey();
 	// 키워드로 장소를 검색합니다
 	searchPlaces();
 	
 
 	// 키워드 검색을 요청하는 함수입니다
 	function searchPlaces() {
-
-	    var keyword = document.getElementById('keyword').value;
-
+		
+	    var keyword = insertKeyword.value;
+	    
 	    if (!keyword.replace(/^\s+|\s+$/g, '')) {
-	        alert('키워드를 입력해주세요!');
+	    //    alert('키워드를 입력해주세요!');
 	        return false;
 	    }
-
+	    
+	    dtoObj.inputdata = keyword;
 	    // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
 	    ps.keywordSearch( keyword, placesSearchCB); 
 	}
@@ -389,7 +396,7 @@
 	    	ph.value = data.phone;
 	    	cate.value = data.category_name;
 	    	urldata.href = data.place_url;
-	    	
+	    	setDTO(data);
 	     };
 	}
 	 
@@ -426,23 +433,35 @@
 	} 
 	function setDTO(data){
 		//dtoObj.markerId:data.place_name,
-		dtoObj.pointX = data.x,
-		dtoObj.pointY = data.y,
-		dtoObj.category = data.category_name,
-		dtoObj.pointName = data.place_name,
-		dtoObj.phone = data.phone,
-		dtoObj.address = data.address_name,
-		dtoObj.description = data.place_url
+		dtoObj.pointX = data.x;
+		dtoObj.pointY = data.y;
+		dtoObj.category = data.category_name;
+		dtoObj.pointName = data.place_name;
+		dtoObj.phone = data.phone;
+		dtoObj.address = data.address_name;
+		dtoObj.description = data.place_url;
 	}	
 	
 	function sendData(){
 		$.ajax({
-			url : "addMarker",
+			url : "/FoodTrip/marker/addMarker",
 			type : "post",
 			data : JSON.stringify(dtoObj),
 			contentType : "application/json",
-			success : alert("마커 저장완료")
+			success : function(response){
+				alert("마커 저장완료");
+				console.log(response);
+				insertKeyword.value = response.inputdata;
+				//$("#keyword").val(response.inputdata);
+			},
+			error : function(){
+				alert("마커 입력 에러")
+			}
 		});
+	}
+	
+	function setInsertKey(){
+		insertKeyword.value = saveKeyword;
 	}
 	</script>
 </body>

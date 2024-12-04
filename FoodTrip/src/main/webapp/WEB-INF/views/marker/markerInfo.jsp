@@ -20,7 +20,7 @@
 	<p><%= marker.getPhone()%>
 	<p><%= marker.getAddress()%>
 	<p><%= marker.getDescription()%>
-	<img src="/FoodTrip/resources/images/<%= marker.getImageName()%>"/>
+	<img src="/FoodTrip/resources/images/<%= marker.getImageName()%>" style="width:100px"/>
 	<p><a href="update?id=<%= marker.getmarkerId()%>">수정</a>
 	<p><a href="delete?id=<%= marker.getmarkerId()%>">삭제</a>
 </body>
