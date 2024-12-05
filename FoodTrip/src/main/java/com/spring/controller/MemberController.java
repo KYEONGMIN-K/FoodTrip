@@ -18,7 +18,7 @@ import com.spring.domain.Member;
 import com.spring.service.MemberService;
 
 @Controller
-public class member {
+public class MemberController {
 
 	@Autowired
 	private MemberService memberService;

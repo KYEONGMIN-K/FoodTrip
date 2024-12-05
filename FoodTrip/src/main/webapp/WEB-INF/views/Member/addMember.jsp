@@ -20,8 +20,8 @@
 		<p>비밀번호 : <form:input path="password"/>
 		<p>닉네임 : <form:input path="nickName"/>
 		<p>성별 : <div>
-					<form:radiobutton path="gender" value="남성"/>남성
-					<form:radiobutton path="gender" value="여성"/>여성
+					<form:radiobutton path="gender" value="Man"/>남성
+					<form:radiobutton path="gender" value="Woman"/>여성
 				</div>
 		<p>나이 : <form:input type="number" path="age"/>
 		<p>	<input type="submit" value="회원가입">

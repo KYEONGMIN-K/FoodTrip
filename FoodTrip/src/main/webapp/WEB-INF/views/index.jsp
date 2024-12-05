@@ -6,8 +6,9 @@
 	HttpSession session = request.getSession(false);
 	String sessionId = null;
 	if(session != null){
-		System.out.println("세션null아님");
+		
 		Member mb = (Member) session.getAttribute("sessionId");
+		System.out.println("세션null아님 " );
 		if(mb != null){
 			System.out.println("mb null아님");
 			sessionId = mb.getEmail();
@@ -25,5 +26,7 @@
 	<a href="login">로그인</a>
 <%} %>
 <a href="addMember">회원가입</a>
+
+<a href="boards">리뷰게시판</a>
 </body>
 </html>
