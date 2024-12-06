@@ -13,15 +13,15 @@ public class MarkerRowMapper implements RowMapper<Marker>{
 	public Marker mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Marker marker = new Marker();
 		
-		marker.setmarkerId(rs.getString(1));
-		marker.setPointX(rs.getDouble(2));
-		marker.setPointY(rs.getDouble(3));
-		marker.setCategory(rs.getString(4));
-		marker.setPointName(rs.getString(5));
-		marker.setPhone(rs.getString(6));
-		marker.setAddress(rs.getString(7));
-		marker.setDescription(rs.getString(8));
-		marker.setImageName(rs.getString(9));
+		marker.setmarkerId(rs.getString(2));
+		marker.setPointX(rs.getDouble(3));
+		marker.setPointY(rs.getDouble(4));
+		marker.setCategory(rs.getString(5));
+		marker.setPointName(rs.getString(6));
+		marker.setPhone(rs.getString(7));
+		marker.setAddress(rs.getString(8));
+		marker.setDescription(rs.getString(9));
+		marker.setImageName(rs.getString(10));
 		
 		return marker;
 	}

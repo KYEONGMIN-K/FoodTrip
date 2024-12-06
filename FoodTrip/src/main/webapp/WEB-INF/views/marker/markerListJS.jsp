@@ -9,10 +9,15 @@
 <title>Insert title here</title>
 <style>
 	.markerlist{
+		width:100%;
 		list-style : none;
+		display:flex;
+		flex-wrap:wrap;
 	}
 	.listCh {
+		width: 38%;
 		margin-top: 10px;
+		margin-left: 20px;
 		margin-bottom: 10px;
 		border: 1px solid #000000;
 	}
@@ -58,9 +63,9 @@
 		        }
 		    },
 		    error: function(xhr, status, error) {
-		        console.error("AJAX 요청 실패:", error);
+		        //console.error("AJAX 요청 실패:", error);
 		        console.log("상태:", status);
-		        console.log("응답 텍스트:", xhr.responseText);
+		        //console.log("응답 텍스트:", xhr.responseText);
 		    }
 		});
 	}
@@ -69,6 +74,7 @@
 		var parent = document.querySelector(".markerlist");
 		console.log(data[0].category);
 		for(var i=0; i<data.length; i++){
+			console.log(data[i].markerId);
 			(function(index){
 				var list = document.createElement('li');
 				list.setAttribute("class", "listCh");
@@ -79,12 +85,7 @@
 								+ data[index].pointName + "</div><div class='phone'>"
 								+ data[index].phone + "</div><div class='address'>"
 								+ data[index].address + "</div><a href='"+data[index].description +"' class='description' target='_blank'>"
-								+ "사이트이동" +"</a>";
-					//<div class="category">${data[index].category}</div>
-					//<div class="pointName">${data[index].pointName}</div>
-					//<div class="phone">${data[index].phone}</div>
-					//<div class="address">${data[index].address}</div>
-					//<div class="description">${data[index].description}</div>
+								+ "사이트이동" +"</a><br><a href='/FoodTrip/marker/markerUpdate?id="+data[index].markerId+"'>수정</a><br><a href='/FoodTrip/marker/delete?id="+data[index].markerId+"'>삭제</a>";
 				parent.appendChild(list);	
 			})(i);
 		}

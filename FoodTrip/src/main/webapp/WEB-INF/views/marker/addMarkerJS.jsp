@@ -9,7 +9,7 @@
 	 <style>
 		.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 		.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
-		.map_wrap {position:relative;width:100%;height:500px;}
+		.map_wrap {position:relative;width:70%;height:500px;}
 		#menu_wrap {position:absolute;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
 		.bg_white {background:#fff;}
 		#menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
@@ -65,7 +65,7 @@
 	    </div>
 	</div>
 	<div>
-		<form>
+		<form onsubmit="return false;">
 			<p>
 				<label>마커ID</label>
 				<input id="markerId"/>
@@ -98,12 +98,11 @@
 				<label>장소이미지</label>
 				<input id="image" type="file"/>
 			
-			<input type="submit" value="등록" />
 			<button id="sendData">전송</button>
 		</form>
 	</div>
 	
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=본인KEY입력&libraries=services"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=&libraries=services"></script>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script>
 	

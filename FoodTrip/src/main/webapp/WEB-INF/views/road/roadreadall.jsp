@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<a href="makeRoad">코스 생성</a>
+
 </body>
 </html>
