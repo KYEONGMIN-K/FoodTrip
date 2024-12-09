@@ -1,18 +1,23 @@
 package com.spring.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.domain.Road;
+import com.spring.repository.RoadRepository;
 
 @Service
 public class RoadServiceImpl implements RoadService{
 
+	@Autowired
+	private RoadRepository roadRepository;
+	
 	@Override
 	public void roadCreate(Road road) {
-		// TODO Auto-generated method stub
-		
+		roadRepository.roadCreate(road);
 	}
 
 	@Override
@@ -22,15 +27,16 @@ public class RoadServiceImpl implements RoadService{
 	}
 
 	@Override
-	public List<Road> roadReadAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Road> roadReadAll() {	
+		List<Road> list = roadRepository.roadReadAll();
+
+		return list;
 	}
 
 	@Override
 	public Road roadReadOne(String roadId) {
-		// TODO Auto-generated method stub
-		return null;
+		Road road = roadRepository.roadReadOne(roadId);
+		return road;
 	}
 
 	@Override

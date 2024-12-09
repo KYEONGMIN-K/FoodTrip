@@ -103,7 +103,7 @@
 		</form:form>
 	</div>
 	
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=본인KEY입력&libraries=services"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=&libraries=services"></script>
 	<script>
 	
 	// input 태그 

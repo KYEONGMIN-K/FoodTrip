@@ -1,51 +1,55 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%> 
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+    pageEncoding="UTF-8"%>
+<%@ page import="com.spring.domain.*" %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-	 <style>
-		.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
-		.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
-		.map_wrap {position:relative;width:70%;height:500px;}
-		#menu_wrap {position:absolute;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
-		.bg_white {background:#fff;}
-		#menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
-		#menu_wrap .option{text-align: center;}
-		#menu_wrap .option p {margin:10px 0;}  
-		#menu_wrap .option button {margin-left:5px;}
-		#placesList li {list-style: none;}
-		#placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
-		#placesList .item span {display: block;margin-top:4px;}
-		#placesList .item h5, #placesList .item .info {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
-		#placesList .item .info{padding:10px 0 10px 55px;}
-		#placesList .info .gray {color:#8a8a8a;}
-		#placesList .info .jibun {padding-left:26px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
-		#placesList .info .tel {color:#009900;}
-		#placesList .item .markerbg {float:left;position:absolute;width:36px; height:37px;margin:10px 0 0 10px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
-		#placesList .item .marker_1 {background-position: 0 -10px;}
-		#placesList .item .marker_2 {background-position: 0 -56px;}
-		#placesList .item .marker_3 {background-position: 0 -102px}
-		#placesList .item .marker_4 {background-position: 0 -148px;}
-		#placesList .item .marker_5 {background-position: 0 -194px;}
-		#placesList .item .marker_6 {background-position: 0 -240px;}
-		#placesList .item .marker_7 {background-position: 0 -286px;}
-		#placesList .item .marker_8 {background-position: 0 -332px;}
-		#placesList .item .marker_9 {background-position: 0 -378px;}
-		#placesList .item .marker_10 {background-position: 0 -423px;}
-		#placesList .item .marker_11 {background-position: 0 -470px;}
-		#placesList .item .marker_12 {background-position: 0 -516px;}
-		#placesList .item .marker_13 {background-position: 0 -562px;}
-		#placesList .item .marker_14 {background-position: 0 -608px;}
-		#placesList .item .marker_15 {background-position: 0 -654px;}
-		#pagination {margin:10px auto;text-align: center;}
-		#pagination a {display:inline-block;margin-right:10px;}
-		#pagination .on {font-weight: bold; cursor: default;color:#777;}
-	</style>
+<style>
+	.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
+	.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
+	.map_wrap {position:relative;width:70%;height:500px;}
+	#menu_wrap {position:absolute;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
+	.bg_white {background:#fff;}
+	#menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
+	#menu_wrap .option{text-align: center;}
+	#menu_wrap .option p {margin:10px 0;}  
+	#menu_wrap .option button {margin-left:5px;}
+	#placesList li {list-style: none;}
+	#placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
+	#placesList .item span {display: block;margin-top:4px;}
+	#placesList .item h5, #placesList .item .info {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+	#placesList .item .info{padding:10px 0 10px 55px;}
+	#placesList .info .gray {color:#8a8a8a;}
+	#placesList .info .jibun {padding-left:26px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
+	#placesList .info .tel {color:#009900;}
+	#placesList .item .markerbg {float:left;position:absolute;width:36px; height:37px;margin:10px 0 0 10px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
+	#placesList .item .marker_1 {background-position: 0 -10px;}
+	#placesList .item .marker_2 {background-position: 0 -56px;}
+	#placesList .item .marker_3 {background-position: 0 -102px}
+	#placesList .item .marker_4 {background-position: 0 -148px;}
+	#placesList .item .marker_5 {background-position: 0 -194px;}
+	#placesList .item .marker_6 {background-position: 0 -240px;}
+	#placesList .item .marker_7 {background-position: 0 -286px;}
+	#placesList .item .marker_8 {background-position: 0 -332px;}
+	#placesList .item .marker_9 {background-position: 0 -378px;}
+	#placesList .item .marker_10 {background-position: 0 -423px;}
+	#placesList .item .marker_11 {background-position: 0 -470px;}
+	#placesList .item .marker_12 {background-position: 0 -516px;}
+	#placesList .item .marker_13 {background-position: 0 -562px;}
+	#placesList .item .marker_14 {background-position: 0 -608px;}
+	#placesList .item .marker_15 {background-position: 0 -654px;}
+	#pagination {margin:10px auto;text-align: center;}
+	#pagination a {display:inline-block;margin-right:10px;}
+	#pagination .on {font-weight: bold; cursor: default;color:#777;}
+</style>
 </head>
 <body>
+	<%
+		Marker marker = (Marker)request.getAttribute("marker");
+	%>
 		
 	<div class="map_wrap">
 	    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
@@ -68,40 +72,37 @@
 		<form onsubmit="return false;">
 			<p>
 				<label>마커ID</label>
-				<input id="markerId"/>
+				<input id="markerId" value="<%=marker.getmarkerId() %>" readOnly/>
 			</p>
 			<p>
 				<label>좌표 X</label>
-				<input id="pointX"/>
+				<input id="pointX" value="<%=marker.getPointX() %>"/>
 			<p>
 				<label>좌표 Y</label>
-				<input id="pointY"/>
+				<input id="pointY" value="<%=marker.getPointY() %>"/>
 			<p>
 				<label>카테고리</label>
-				<input id="category"/>
+				<input id="category" value="<%=marker.getCategory() %>"/>
 			<p>
 				<label>장소명</label>
-				<input id="pointName"/>
+				<input id="pointName" value="<%=marker.getPointName() %>"/>
 			<p>
 				<label>전화번호</label>
-				<input id="phone"/>
+				<input id="phone" value="<%=marker.getPhone() %>"/>
 			<p>
 				<label>주소</label>
-				<input id="address"/>
+				<input id="address" value="<%=marker.getAddress() %>"/>
 			<p>
 				<label>정보보기</label>
 				<a href="#" id="urlData" target="_blank">정보보기</a>
 			<p>
 				<label>장소설명</label>
-				<textarea id="description" col="50" row="20"></textarea>
+				<input id="url" value="<%=marker.getDescription() %>"/>
 			<p>
-				<label>장소이미지</label>
-				<input id="image" type="file"/>
 			
-			<button id="sendData">전송</button>
+			<button id="sendbtn">전송</button>
 		</form>
 	</div>
-	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=&libraries=services"></script>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script>
@@ -116,8 +117,9 @@
 	var addr = document.querySelector("#address");
 	var urldata = document.querySelector("#urlData");
 	var desc = document.querySelector("#description");
-	var send = document.querySelector("#sendData");
+	var send = document.querySelector("#sendbtn");
 	var insertKeyword = document.querySelector("#keyword");
+
 	var saveKeyword;
 	// 마커를 담을 배열입니다
 	var markers = [];
@@ -151,13 +153,12 @@
 
 	
 	//이벤트 할당
-	send.addEventListener('click', sendData);
-	
+//	var send = document.querySelector("#sendbtn");
+	send.addEventListener('click', updateData);
 	
 	//setInsertKey();
 	// 키워드로 장소를 검색합니다
 	searchPlaces();
-	
 
 	// 키워드 검색을 요청하는 함수입니다
 	function searchPlaces() {
@@ -431,7 +432,7 @@
 		});
 	} 
 	function setDTO(data){
-		//dtoObj.markerId:data.place_name,
+		dtoObj.markerId = data.markerId,
 		dtoObj.pointX = data.x;
 		dtoObj.pointY = data.y;
 		dtoObj.category = data.category_name;
@@ -441,21 +442,32 @@
 		dtoObj.description = data.place_url;
 	}	
 	
-	function sendData(){
+	function setDTObefore(){
+		console.log(id.value);
+		dtoObj.markerId = id.value;
+		dtoObj.pointX = px.value;
+		dtoObj.pointY = py.value;
+		dtoObj.category = cate.value;
+		dtoObj.pointName = pn.value;
+		dtoObj.phone = ph.value;
+		dtoObj.address = addr.value;
+		dtoObj.description = urldata.value;
+	}	
+	
+	function updateData(event){
+		 event.preventDefault();
+		 setDTObefore();
 		$.ajax({
-			url : "/FoodTrip/marker/addMarker",
+			url : "/FoodTrip/marker/editexecute",
 			type : "post",
 			data : JSON.stringify(dtoObj),
 			contentType : "application/json",
 			success : function(response){
-				if(response){
-					alert("마커 저장완료");
-					console.log(response);
-					insertKeyword.value = response.inputdata;
-					//$("#keyword").val(response.inputdata);
-				}else{
-					alert("마커 데이터가 이미 존재합니다.");
-				}
+				alert("마커 수정완료");
+				console.log(response);
+				location.href="/FoodTrip/marker/readalljson"
+				//insertKeyword.value = response.inputdata;
+				//$("#keyword").val(response.inputdata);
 			},
 			error : function(){
 				alert("마커 입력 에러")
@@ -467,5 +479,6 @@
 		insertKeyword.value = saveKeyword;
 	}
 	</script>
+	
 </body>
 </html>
