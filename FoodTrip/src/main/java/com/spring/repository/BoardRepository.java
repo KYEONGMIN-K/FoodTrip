@@ -18,4 +18,6 @@ public interface BoardRepository {
 
 	void setComment(Board board);
 
+	void setUpdateBoard(Board board);
+
 }

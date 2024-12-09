@@ -8,6 +8,7 @@
 	List<Board> list = (List<Board>)request.getAttribute("list");
 	HttpSession session = request.getSession(false);
 	Board brd = new Board();
+	int pageNum = (Integer)request.getAttribute("pageNum");
 	Member sessionId = (Member)session.getAttribute("sessionId");
 	if(sessionId != null){
 		System.out.println("게시글 작성 폼 세션 널아님!!");
@@ -46,6 +47,10 @@
 				<h2>내용</h2>
 				<p><%=brd.getContent()%>
 			</div>
+			<%
+				if(brd.getNickName().equals(sessionId.getNickName())){ System.out.println("게시글 작성자와 현재 계정이 동일");%>
+					<a href="updateBoard?num=<%=brd.getBrdNum()%>&pageNum=<%=pageNum%>" class="btn btn-primary">수정</a>
+			<%		System.out.println("게시글번호 : " + brd.getBrdNum() + "pageNum : " + pageNum );	}%>
 			<hr>
 			<div>
 				<div>

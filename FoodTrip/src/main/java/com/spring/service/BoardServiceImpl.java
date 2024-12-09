@@ -42,4 +42,7 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.setComment(board);
 	}
 	
+	public void setUpdateBoard(Board board) {
+		boardRepository.setUpdateBoard(board);
+	}
 }

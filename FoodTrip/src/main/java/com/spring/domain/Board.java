@@ -6,16 +6,18 @@ public class Board {
 
 	private long brdNum;         	// 게시글 번호 (Primary Key)
     private long parentNum;     	// 부모 게시글 번호 (null이면 최상위 게시글)
-    private String nickName;        	// 작성자 이메일
+    private String nickName;       	// 작성자 이메일
     private String title;        	// 게시글 제목
     private String content;      	// 게시글 내용
     private Timestamp createTime;	// 작성 날짜 및 시간
     private String ip;          	// 작성자 IP 주소
-    private int likes;       	// 좋아요 수
-    private int views;      	// 조회 수
-    private int depth;      	// 계층 깊이 (1: 게시글, 2: 댓글, 3: 답글)
+    private int likes;       		// 좋아요 수
+    private int views;      		// 조회 수
+    private int depth;      		// 계층 깊이 (1: 게시글, 2: 댓글, 3: 답글)
+    private Timestamp updateDay;	// 게시글 수정 날짜
+    
 
-    public Board() {}
+	public Board() {}
     
     public Board(long brdNum, String nickName, String title, Timestamp createTime, int likes, int views) {
 		this.brdNum = brdNum;
@@ -27,6 +29,13 @@ public class Board {
 	}
 
 	// Getter & Setter
+    public Timestamp getUpdateDay() {
+    	return updateDay;
+    }
+    
+    public void setUpdateDay(Timestamp updateDay) {
+    	this.updateDay = updateDay;
+    }
 	public long getBrdNum() {
 		return brdNum;
 	}

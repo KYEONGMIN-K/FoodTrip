@@ -18,7 +18,7 @@
 </head>
 <body>
 	<form:form modelAttribute="addBrd" method="post">
-		<p>이메일 : <form:input path="nickName" value="<%=sessionId.getNickName()%>" readonly="true" />
+		<p>닉네임 : <form:input path="nickName" value="<%=sessionId.getNickName()%>" readonly="true" />
 		<p>제목 : <form:input path="title" placeholder="제목을 입력해주세요"/>
 		<p>내용 : 
 			<p><form:textarea path="content" cols="100" rows="30"/>

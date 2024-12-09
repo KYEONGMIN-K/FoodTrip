@@ -18,4 +18,6 @@ public interface BoardService {
 
 	void setComment(Board board);
 
+	void setUpdateBoard(Board board);
+
 }

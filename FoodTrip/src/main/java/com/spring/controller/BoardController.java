@@ -120,12 +120,61 @@ public class BoardController {
 		if(sessionId == null){
 			return "redirect:/login";
 		} 
-		
+		model.addAttribute("pageNum", pageNum);
+		// 조회수 증가 
 		boardService.setViews(brdNum);
 		return "Board/BoardView";
 	}
 	
-	// 댓글, 대댓글 생성 : Create
+	// 게시글 수정 : Update
+	@GetMapping("/updateBoard")
+	public String updateBoard(	@ModelAttribute("uptBrd") Board board,
+								@RequestParam("num") long brdNum,
+								@RequestParam("pageNum") int pageNum,
+								Model model,
+								HttpServletRequest request) {
+		System.out.println("updateBoard()실행 : 게시글 수정 폼 제공");
+		HttpSession session = request.getSession(false);
+		Member sessionId = (Member)session.getAttribute("sessionId");
+		if(sessionId == null){
+			return "redirect:/login";
+		} 
+		
+		List<Board> list = boardService.getOneboard(brdNum);
+		if(board == null) {
+			return "redirect:/Boards";
+		}
+		for(int i=0; i<list.size(); i++) {
+			board = list.get(i);
+			if(board.isPost()) {
+				model.addAttribute("list", list);	// 게시글 처리			
+			}
+		}
+		model.addAttribute("brdNum", brdNum);
+		model.addAttribute("pageNum", pageNum);
+		return "Board/updateBoard";
+	}
+	
+	@PostMapping("/updateBoard")
+	public String submitUpdateBoard(@ModelAttribute("uptBrd") Board board) {
+		System.out.println("submitUpdateBoard() 실행 : 게시글 수정 시작");
+		
+		// 게시글 작성 시간을 저장
+		Timestamp time = new Timestamp(System.currentTimeMillis());
+	    board.setUpdateDay(time);
+		
+		
+		boardService.setUpdateBoard(board);
+		return "redirect/Boards";
+	}
+	
+	
+	
+	
+	// 게시판 삭제 : Delete
+	
+	
+	// 댓글, 대댓글 생성 : Create 미완성
 	@ResponseBody
 	@PostMapping("/comment")
 	public void comment(@RequestBody HashMap<String,Object> map,
@@ -153,9 +202,6 @@ public class BoardController {
 		System.out.println(brdNum +" : " + depth);
 		boardService.setComment(board);
 	}
-	
-	// 게시판 수정 : Update
-	// 게시판 삭제 : Delete
 	
 	
 	
