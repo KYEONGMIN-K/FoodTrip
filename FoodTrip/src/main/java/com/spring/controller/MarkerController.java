@@ -109,7 +109,9 @@ public class MarkerController {
 	@PostMapping("/addMarker")
 	public ResponseEntity<Map<String, String>> addMarker(@RequestBody HashMap<String, Object> map, HttpServletRequest req) {
 		System.out.println(map);
-				
+		//만약 같은 데이터가 들어온다면
+		
+		
 		//전처리
 		Map<String, String> saveSearch = new HashMap(); 
 		saveSearch.put("inputdata", (String)map.get("inputdata"));
@@ -124,7 +126,13 @@ public class MarkerController {
 		marker.setPhone((String)map.get("phone"));
 		marker.setCategory((String)map.get("category"));
 		marker.setDescription((String)map.get("description"));
-
+		String pname = marker.getPointName();
+		String paddr = marker.getAddress();
+		
+		Boolean ie = markerService.isExist(pname, paddr);
+		if(ie) {
+			return null;
+		}
 		//카테고리에 따라 마커 분류
 		String tmp = marker.getCategory();
 		tmp = tmp.replaceAll("\\s+", "");

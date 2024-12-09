@@ -25,6 +25,12 @@ public class MarkerServiceImpl implements MarkerService{
 		
 		return list;
 	}
+	
+
+	@Override
+	public Boolean isExist(String name, String addr) {
+		return markerRepository.isExist(name, addr);	
+	}
 
 	@Override
 	public Marker markerReadOne(String markerId) {

@@ -8,5 +8,6 @@
 </head>
 <body>
 	<a href="makeRoad">코스 생성</a>
+	<a href="readRoad">코스 전체보기</a>
 </body>
 </html>

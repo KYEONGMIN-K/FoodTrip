@@ -448,10 +448,14 @@
 			data : JSON.stringify(dtoObj),
 			contentType : "application/json",
 			success : function(response){
-				alert("마커 저장완료");
-				console.log(response);
-				insertKeyword.value = response.inputdata;
-				//$("#keyword").val(response.inputdata);
+				if(response){
+					alert("마커 저장완료");
+					console.log(response);
+					insertKeyword.value = response.inputdata;
+					//$("#keyword").val(response.inputdata);
+				}else{
+					alert("마커 데이터가 이미 존재합니다.");
+				}
 			},
 			error : function(){
 				alert("마커 입력 에러")

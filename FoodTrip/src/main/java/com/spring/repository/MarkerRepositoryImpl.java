@@ -44,6 +44,27 @@ public class MarkerRepositoryImpl implements MarkerRepository{
 		return list;
 	}
 	
+	
+	
+	@Override
+	public Boolean isExist(String name, String addr) {
+		System.out.println("exist? : " + name + " | "+ addr);
+		String SQL = "SELECT * FROM marker where pointName=? and address=?";
+		
+		try {
+			Marker marker = template.queryForObject(SQL, new Object[] {name, addr}, new MarkerRowMapper());
+			if(marker != null && marker.getPointName().equals(name) && marker.getAddress().equals(addr)) {
+				//존재한다.
+				System.out.println("exist!!");
+				return true;
+			}
+		}catch(Exception e) {
+			System.out.println("no exist");
+			return false;
+		}
+		return false;
+	}
+
 	@Override
 	public Marker markerReadOne(String markerId) {
 		
