@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 	 <style>
+	 	.container {display:flex}
 		.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 		.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
 		.map_wrap {position:relative;width:70%;height:500px;}
@@ -46,62 +47,62 @@
 	</style>
 </head>
 <body>
+	<div class="container">	
+		<div class="map_wrap">
+		    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
 		
-	<div class="map_wrap">
-	    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
-	
-	    <div id="menu_wrap" class="bg_white">
-	        <div class="option">
-	            <div>
-	                <form onsubmit="searchPlaces(); return false;">
-	                    키워드 : <input type="text" id="keyword" size="15"> 
-	                    <button type="submit">검색하기</button> 
-	                </form>
-	            </div>
-	        </div>
-	        <hr>
-	        <ul id="placesList"></ul>
-	        <div id="pagination"></div>
-	    </div>
+		    <div id="menu_wrap" class="bg_white">
+		        <div class="option">
+		            <div>
+		                <form onsubmit="searchPlaces(); return false;">
+		                    키워드 : <input type="text" id="keyword" size="15"> 
+		                    <button type="submit">검색하기</button> 
+		                </form>
+		            </div>
+		        </div>
+		        <hr>
+		        <ul id="placesList"></ul>
+		        <div id="pagination"></div>
+		    </div>
+		</div>
+		<div>
+			<form onsubmit="return false;">
+				<p>
+					<label>마커ID</label>
+					<input id="markerId"/>
+				</p>
+				<p>
+					<label>좌표 X</label>
+					<input id="pointX"/>
+				<p>
+					<label>좌표 Y</label>
+					<input id="pointY"/>
+				<p>
+					<label>카테고리</label>
+					<input id="category"/>
+				<p>
+					<label>장소명</label>
+					<input id="pointName"/>
+				<p>
+					<label>전화번호</label>
+					<input id="phone"/>
+				<p>
+					<label>주소</label>
+					<input id="address"/>
+				<p>
+					<label>정보보기</label>
+					<a href="#" id="urlData" target="_blank">정보보기</a>
+				<p>
+					<label>장소설명</label>
+					<textarea id="description" col="50" row="20"></textarea>
+				<p>
+					<label>장소이미지</label>
+					<input id="image" type="file"/>
+				
+				<button id="sendData">전송</button>
+			</form>
+		</div>
 	</div>
-	<div>
-		<form onsubmit="return false;">
-			<p>
-				<label>마커ID</label>
-				<input id="markerId"/>
-			</p>
-			<p>
-				<label>좌표 X</label>
-				<input id="pointX"/>
-			<p>
-				<label>좌표 Y</label>
-				<input id="pointY"/>
-			<p>
-				<label>카테고리</label>
-				<input id="category"/>
-			<p>
-				<label>장소명</label>
-				<input id="pointName"/>
-			<p>
-				<label>전화번호</label>
-				<input id="phone"/>
-			<p>
-				<label>주소</label>
-				<input id="address"/>
-			<p>
-				<label>정보보기</label>
-				<a href="#" id="urlData" target="_blank">정보보기</a>
-			<p>
-				<label>장소설명</label>
-				<textarea id="description" col="50" row="20"></textarea>
-			<p>
-				<label>장소이미지</label>
-				<input id="image" type="file"/>
-			
-			<button id="sendData">전송</button>
-		</form>
-	</div>
-	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=&libraries=services"></script>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script>

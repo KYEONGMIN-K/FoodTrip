@@ -40,7 +40,8 @@ public class RoadServiceImpl implements RoadService{
 	}
 
 	@Override
-	public void roadUpdate(String roadId) {
+	public void roadUpdate(Road road) {
+		roadRepository.roadUpdate(road);
 		// TODO Auto-generated method stub
 		
 	}

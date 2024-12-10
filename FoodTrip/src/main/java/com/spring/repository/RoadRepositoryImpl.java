@@ -63,9 +63,9 @@ public class RoadRepositoryImpl implements RoadRepository{
 	}
 
 	@Override
-	public void roadUpdate(String roadId) {
-		// TODO Auto-generated method stub
-		
+	public void roadUpdate(Road road) {
+		String SQL = "UPDATE road SET course=?, courseSize=?, category=? where roadId=?";
+		template.update(SQL, road.getCourseToString(), road.getCourseSize(), road.getCategory(), road.getRoadId());
 	}	
 	
 	public String idCreate(String id) {

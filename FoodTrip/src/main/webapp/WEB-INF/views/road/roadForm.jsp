@@ -45,11 +45,7 @@
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey="></script>
 	<script>
-	var category= document.querySelector("#category");
-	var pName= document.querySelector("#pointName");
-	var phone= document.querySelector("#phone");
-	var addr= document.querySelector("#address");
-	var desc= document.querySelector("#description");
+
 	var choice = document.querySelector("#choice");
 	
 	var userNick = "admin";
@@ -215,7 +211,6 @@
 			}
 		}
 		return 0;
-		
 	}
 	
 	function planCreate(){
