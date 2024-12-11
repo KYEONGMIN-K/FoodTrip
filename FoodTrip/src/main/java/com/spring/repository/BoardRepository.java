@@ -6,18 +6,17 @@ import com.spring.domain.Board;
 
 public interface BoardRepository {
 
-	List<Board> getAllBoards(int offset, int limit);
-
-	int getBoardCount(String items, String text);
-
 	void setAddBoard(Board board);
-
-	List<Board> getOneBoard(long brdNum);
-
+	List<Board> getAllBoards(int offset, int limit);
+	int getBoardCount();
+	Board getOneBoard(long brdNum);
+	void setUpdateBoard(Board board);
+	void deleteBoard(long brdNum);
 	void setViews(long brdNum);
 
-	void setComment(Board board);
 
-	void setUpdateBoard(Board board);
-
+	void addComment(Board board);
+	void updateComment(Board board);
+	void deleteComment(long commentId);
+	List<Board> getCommentsByBoardId(long boardId);
 }

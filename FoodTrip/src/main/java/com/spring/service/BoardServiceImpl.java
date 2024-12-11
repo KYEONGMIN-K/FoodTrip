@@ -14,35 +14,51 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardRepository boardRepository;
 	
-	public List<Board> getAllBoards(int pageNum, int limit) {
-		// pageNum을 기반으로 offset과 limit을 계산한 뒤 Repository에서
-		// 해당 페이지 데이터를 가져옴
-		int offset = (pageNum - 1) * limit;
-		return boardRepository.getAllBoards(offset, limit);
-	}
-	
-	public List<Board> getOneboard(long brdNum) {
-		 
-		return (List<Board>) boardRepository.getOneBoard(brdNum);
-	}
-	
-	public int getBoardCount(String items, String text) {
-		return boardRepository.getBoardCount(items,text);
-	}
-	
+	// 게시글 생성
 	public void setAddBoard(Board board) {
 		boardRepository.setAddBoard(board);
 	}
-	
-	public void setViews(long brdNum) {
-		boardRepository.setViews(brdNum);
+	// 게시글 목록 조회
+	public List<Board> getAllBoards(int offset, int limit) {
+		return boardRepository.getAllBoards(offset, limit);
 	}
-	
-	public void setComment(Board board){
-		boardRepository.setComment(board);
+	// 전체 게시글 수 조회
+	public int getBoardCount() {
+		return boardRepository.getBoardCount();
 	}
-	
+	// 게시글 상세 조회
+	public Board getOneBoard(long brdNum) {
+		return boardRepository.getOneBoard(brdNum);
+	}
+	// 게시글 수정
 	public void setUpdateBoard(Board board) {
 		boardRepository.setUpdateBoard(board);
 	}
+	// 게시글 삭제
+	public void deleteBoard(long brdNum) {
+		boardRepository.deleteBoard(brdNum);
+	}
+	// 조회수 증가
+	public void setViews(long brdNum) {
+		boardRepository.setViews(brdNum);
+	}
+	// 댓글/대댓글 생성
+	public void addComment(Board board){
+		boardRepository.addComment(board);
+	}
+	// 댓글/대댓글 수정
+    public void updateComment(Board comment) {
+        boardRepository.updateComment(comment);
+    }
+
+    // 댓글/대댓글 삭제
+    public void deleteComment(long commentId) {
+        boardRepository.deleteComment(commentId);
+    }
+    // 댓글 조회 메서드
+    public List<Board> getCommentsByBoardId(long boardId) {
+        return boardRepository.getCommentsByBoardId(boardId);
+    }
+	
+	
 }

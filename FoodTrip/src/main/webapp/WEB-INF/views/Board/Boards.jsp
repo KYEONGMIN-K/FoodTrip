@@ -4,11 +4,9 @@
 <!DOCTYPE html>
 <html>
 	<%
-		int total_record = ((Integer) request.getAttribute("total_record")).intValue();
-		int pageNum = ((Integer) request.getAttribute("pageNum")).intValue();
-		int total_page = ((Integer) request.getAttribute("total_page")).intValue();
-		System.out.println("JSP토탈페이지 : " +  total_page);
-		System.out.println("JSP토탈레코드 : " + total_record);
+		int pageNum = (Integer) request.getAttribute("pageNum");
+	    int totalPage = (Integer) request.getAttribute("totalPage");
+		System.out.println("JSP토탈페이지 : " +  totalPage);
 		System.out.println("JSP페이지넘 : " + pageNum);
 	%>
 
@@ -25,12 +23,12 @@
 				<th>제목</th>
 				<th>작성자</th>
 				<th>조회   |   좋아요</th>
-				<th>작성날자</th>
+				<th>작성날짜</th>
 			</tr>
 			<%
-				List<Board> brd = (List<Board>)request.getAttribute("brd");
+			 	List<Board> brd = (List<Board>) request.getAttribute("boardList");
 				for(int j=0; j<brd.size(); j++){
-					Board notice = (Board) brd.get(j);
+					Board notice = brd.get(j);
 					long parent = notice.getParentNum();
 					
 			%>
@@ -47,7 +45,7 @@
 			%>
 				</table>
 				<div>
-					<%for(int i=1; i<=total_page; i++){%>
+					<%for(int i=1; i<=totalPage; i++){%>
 						<a href="boards?pageNum=<%=i %>">
 						<%if(pageNum == i){ %>
 							<font color='4C5317'><b>[<%=i %>]</b></font>

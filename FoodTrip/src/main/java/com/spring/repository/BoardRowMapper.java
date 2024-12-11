@@ -17,11 +17,13 @@ public class BoardRowMapper implements RowMapper<Board>{
 		bd.setNickName(rs.getString(3));
 		bd.setTitle(rs.getString(4));
 		bd.setContent(rs.getString(5));
-		bd.setCreateTime(rs.getTimestamp(6));
-		bd.setIp(rs.getString(7));
-		bd.setLikes(rs.getInt(8));
-		bd.setViews(rs.getInt(9));
-		bd.setDepth(rs.getInt(10));
+		bd.setCreateTime(rs.getString(6));
+		bd.setUpdateDay(rs.getString(7));
+		bd.setIp(rs.getString(8));
+		bd.setLikes(rs.getInt(9));
+		bd.setViews(rs.getInt(10));
+		bd.setDepth(rs.getInt(11));
+		bd.setPath(rs.getString(12));
 		return bd;
 	}
 	

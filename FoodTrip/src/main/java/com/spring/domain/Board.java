@@ -9,17 +9,20 @@ public class Board {
     private String nickName;       	// 작성자 이메일
     private String title;        	// 게시글 제목
     private String content;      	// 게시글 내용
-    private Timestamp createTime;	// 작성 날짜 및 시간
+    private String createTime;	// 작성 날짜 및 시간
     private String ip;          	// 작성자 IP 주소
     private int likes;       		// 좋아요 수
     private int views;      		// 조회 수
     private int depth;      		// 계층 깊이 (1: 게시글, 2: 댓글, 3: 답글)
-    private Timestamp updateDay;	// 게시글 수정 날짜
+    private String updateDay;	// 게시글 수정 날짜
+    private String path;         // 댓글 계층 구조를 나타내는 경로
     
+
+
 
 	public Board() {}
     
-    public Board(long brdNum, String nickName, String title, Timestamp createTime, int likes, int views) {
+    public Board(long brdNum, String nickName, String title, String createTime, int likes, int views) {
 		this.brdNum = brdNum;
 		this.nickName = nickName;
 		this.title = title;
@@ -29,11 +32,19 @@ public class Board {
 	}
 
 	// Getter & Setter
-    public Timestamp getUpdateDay() {
+
+    public String getPath() {
+    	return path;
+    }
+    
+    public void setPath(String path) {
+    	this.path = path;
+    }
+    public String getUpdateDay() {
     	return updateDay;
     }
     
-    public void setUpdateDay(Timestamp updateDay) {
+    public void setUpdateDay(String updateDay) {
     	this.updateDay = updateDay;
     }
 	public long getBrdNum() {
@@ -76,12 +87,12 @@ public class Board {
 		this.content = content;
 	}
 
-	public Timestamp getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime) {
-		this.createTime = createTime;
+	public void setCreateTime(String formattime) {
+		this.createTime = formattime;
 	}
 
 	public String getIp() {
