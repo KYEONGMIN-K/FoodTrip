@@ -33,16 +33,16 @@ public class RoadRepositoryImpl implements RoadRepository{
 		
 		//road테이블에 입력될 데이터만 넣어준다.(관리자)
 		if(road.getUserNick().equals("admin")) {
-			String SQL = "INSERT INTO road (roadId, usernick, course, courseSize, category, starttime, endtime, checktime) values(?,?,?,?,?,?,?,?)";
-			template.update(SQL, road.getRoadId(), road.getUserNick(), road.getCourseToString(), road.getCourseSize(), road.getCategory(), road.getCreateTime(), road.getEndTime(), road.getCheckTime());
+			String SQL = "INSERT INTO road (roadId, usernick, course, courseSize, category, description, starttime, endtime, checktime) values(?,?,?,?,?,?,?,?,?)";
+			template.update(SQL, road.getRoadId(), road.getUserNick(), road.getCourseToString(), road.getCourseSize(), road.getCategory(), road.getDescription(), road.getCreateTime(), road.getEndTime(), road.getCheckTime());
 		}
 		
 	}
 
 	@Override
 	public void roadDelete(String roadId) {
-		// TODO Auto-generated method stub
-		
+		String SQL = "DELETE FROM road where roadId=?";
+		template.update(SQL, roadId);		
 	}
 
 	@Override
@@ -64,6 +64,7 @@ public class RoadRepositoryImpl implements RoadRepository{
 
 	@Override
 	public void roadUpdate(Road road) {
+		System.out.println("db update befofe : "+road.getRoadId());
 		String SQL = "UPDATE road SET course=?, courseSize=?, category=? where roadId=?";
 		template.update(SQL, road.getCourseToString(), road.getCourseSize(), road.getCategory(), road.getRoadId());
 	}	

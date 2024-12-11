@@ -5,24 +5,103 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="/FoodTrip/resources/css/menu.css"/>
+<style>
+	.markerlist{
+		width:100%;
+		list-style : none;
+		display:flex;
+		flex-wrap:wrap;
+	}
+	.markerlist div{
+		display:block;
+	}
+	.mymlist{
+		width:100%;
+		list-style : none;
+		display:flex;
+		flex-wrap:wrap;
+	}
+	.mymlist div{
+		display:block;
+	}
+	.listCh {
+		margin-top: 10px;
+		margin-left: 20px;
+		margin-bottom: 10px;
+		border: 1px solid #000000;
+	}
+</style>
 </head>
 <body>
-	<div id=map style="width:70%;height:550px;">
+	<%@ include file="../menu/menu.jsp" %>
+	<div id=map style="width:100%;height:550px;">
 		<!-- 지도 공간  -->
 		
 	</div>
+	
 	<div id="menu">
 		<button id="update">코스 수정</button>
 		<button id="reset">리셋</button>
-		<select id="choice">
+	<!-- <select id="choice">
 			<option value="chicken">치킨</option>
 			<option value="chinese">중식</option>
 			<option value="pasta">파스타</option>
 			<option value="snack">분식</option>
 			<option value=disert>디저트</option>
-		</select>
-	</div>
+		</select>-->
+	</div> 
 	<!-- 마커 리스트  -->
+	<div class="container">
+		<div class="mymlist">
+			<div class="listblock">
+				<h3>관광지</h3>
+				<ul class="mytourlist">
+					
+				</ul>
+			</div>
+			<br><br>
+			<div class="listblock">		
+				<h3>음식점</h3>
+				<ul class="myrestlist">
+					
+				</ul>
+			</div>		
+			<br><br>
+			<div class="listblock">
+				<h3>숙소</h3>
+				<ul class="mystaylist">
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+	<hr><hr>
+	<div class="container">
+		<div class="markerlist">
+			<div class="listblock">
+				<h3>관광지</h3>
+				<ul class="tourlist">
+					
+				</ul>
+			</div>
+			<br><br>
+			<div class="listblock">		
+				<h3>음식점</h3>
+				<ul class="restlist">
+					
+				</ul>
+			</div>		
+			<br><br>
+			<div class="listblock">
+				<h3>숙소</h3>
+				<ul class="staylist">
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+<!-- 	
 	<ul class="mymlist">
 		<h3>내가 선택한 마커</h3>
 	
@@ -31,7 +110,7 @@
 	<ul class="markerlist">
 	
 	</ul>	
-	
+ -->
 	
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey="></script>
@@ -47,7 +126,7 @@
 	var listEl = document.querySelector('#placesList');
 	var choice = document.querySelector("#choice");
 	
-	var userNick = "admin";
+	var userNick = "admin";	//사용자 닉네임 저장
 	
 	var rsbtn = document.querySelector("#reset");
 	var upbtn = document.querySelector("#update");
@@ -58,6 +137,14 @@
 	var markers = [];   // 맵에 출력되는 마커 객체 배열, 지도에 마커 출력을 위해 사용
 	var useMarker = []; // 마커가 가지고 있는 정보를 담는 데이터 배열, 리스트 및 마커가 어떤 정보를 가지고 있는지(장소이름, 위도경도 등)
 	var viewlist = [];	// 보여지는 리스트 중 내가 선택하지 않은 마커들의 배열
+	var mlist = document.querySelector(".markerlist");
+	var mylist = document.querySelector(".mymlist");
+	var mytourParents = document.querySelector(".mytourlist");
+	var mystayParents = document.querySelector(".mystaylist");
+	var myrestParents = document.querySelector(".myrestlist");
+	var tourParents = document.querySelector(".tourlist");
+	var stayParents = document.querySelector(".staylist");
+	var restParents = document.querySelector(".restlist");
 	
 	
 	var sendObj = {
@@ -99,7 +186,7 @@
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	    mapOption = { 
 	        center: new kakao.maps.LatLng(35.2538433, 128.6402609), // 지도의 중심좌표
-	        level: 6 // 지도의 확대 레벨
+	        level: 9 // 지도의 확대 레벨
 	    };
 	
 	// 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
@@ -122,7 +209,6 @@
 			async : false,
 			contentType : "application/json",
 			success : function(response){
-
 				//전역 변수 복제
 				copyResp(response);
 				//가져온 하나의 마커를 따로 찍는다.
@@ -237,22 +323,21 @@
 		}
 		//console.log(useMarker);
 	}
-	
-
 
 	//전체 마커 리스트 생성 ---- 그리기
 	function addElements(data){
-		
 		//console.log("addelements in");
 		//console.log(data);
 		//리스트를 추가할 부모 요소
-		var mlist = document.querySelector(".markerlist");
-		var mylist = document.querySelector(".mymlist");
-		//console.log(data[0].category);
+		//console.log(mytourParents);
 		//listReset(mlist, mylist);
 		//가져온 전체 마커를 반복
-		mlist.innerHTML = "";
-		mylist.innerHTML = "";
+		mytourParents.innerHTML = "";
+		tourParents.innerHTML = "";
+		mystayParents.innerHTML = "";
+		stayParents.innerHTML = "";
+		myrestParents.innerHTML = "";
+		restParents.innerHTML = "";
 		for(var i=0; i<data.length; i++){
 		//	console.log(data[i].markerId);
 			(function(index){
@@ -287,25 +372,52 @@
 				list.innerHTML='<div class="category">'+dataOne.category+"</div><div class='pointName'>"
 								+ dataOne.pointName + "</div><div class='phone'>"
 								+ dataOne.phone + "</div><div class='address'>"
-								+ dataOne.address + "</div><a href='"+dataOne.description +"' class='description' target='_blank'>"
-								+ "사이트이동" +"</a><br><a href='/FoodTrip/marker/markerUpdate?id="+dataOne.markerId+"'>수정</a><br><a href='/FoodTrip/marker/delete?id="+dataOne.markerId+"'>삭제</a><br>"
+								+ dataOne.address + "</div><a href='"+dataOne.description +"' class='description' target='_blank'>사이트이동</a>";
 
 				//console.log("여기 안와?");
 				//var exvalue = 0;
 				//var delvalue = 0;
 				console.log(useMarker.length);
+				var cate = dataOne.markerId.substring(0,2);
+				//listMake(list, dataOne);
+				console.log(cate);
 				if(useMarker.length>0){
 					for(var j=0; j<useMarker.length; j++){
 						if(useMarker[j].markerId == dataOne.markerId){
+							//console.log(parent);
+							//console.log(tourParents);
+							if(cate == "TU"){
+								mytourParents.appendChild(list);
+								//mylist.appendChild(tourParents);
+							}else if(cate == "RS"){
+								myrestParents.appendChild(list);
+								//mylist.appendChild(restParents);
+							}else if(cate == "HT"){
+								mystayParents.appendChild(list);
+								//mylist.appendChild(stayParents);
+							}
 							list.setAttribute("class", "select");
 							list.appendChild(delbtn);
-							mylist.appendChild(list);
+							//mylist.appendChild(list);
 							break;
 						}else{
+							//배열을 끝까지 순회한 후에도 같은 마커가 없다면
 							if(j == useMarker.length-1){
+								//console.log(parent);
+							//	console.log(tourParents);
+								if(cate == "TU"){
+									tourParents.appendChild(list);
+									//mlist.appendChild(tourParents);
+								}else if(cate == "RS"){
+									restParents.appendChild(list);
+									//mlist.appendChild(restParents);
+								}else if(cate == "HT"){
+									stayParents.appendChild(list);
+									//mlist.appendChild(stayParents);
+								}
 								list.setAttribute("class", "none");
 								list.appendChild(addbtn);
-								mlist.appendChild(list);
+								//mlist.appendChild(list);
 							}
 						}
 					}
@@ -319,6 +431,14 @@
 			})(i);
 		}
 	}
+	
+	function listMake(list, data){
+		list.innerHTML='<div class="category">'+data.category+"</div><div class='pointName'>"
+		+ data.pointName + "</div><div class='phone'>"
+		+ data.phone + "</div><div class='address'>"
+		+ data.address + "</div><a href='"+data.description +"' class='description' target='_blank'>사이트이동</a>";
+	}
+	
 	
 	//마커 추가함수
 	function addMarker(data){
@@ -388,6 +508,7 @@
 				//리스트 제거
 				viewlist.push(dataOne);
 				var tmp = event.target.parentElement;
+				console.log(tmp);
 				tmp.remove();
 				//console.log(tmp.parentElement);
 				
@@ -399,12 +520,8 @@
 				break;
 			}	
 		}
-		
 	}
-	
-	
-	
-	
+
 	//현재 사용안함
 	function listReset(list1, list2){
 		list1.replaceChildren();
@@ -475,7 +592,6 @@
 			}
 		}
 		return 0;
-		
 	}
 	
 	function planCreate(){

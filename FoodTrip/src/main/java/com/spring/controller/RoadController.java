@@ -51,7 +51,7 @@ public class RoadController {
 
 	@GetMapping("/makeRoad")
 	public String createRoad() {
-		return "road/roadForm";
+		return "road/roadMake";
 	}
 
 	@GetMapping("/readMkAll")
@@ -80,6 +80,7 @@ public class RoadController {
 		road.setCategory((String)map.get("category"));
 		road.setUserNick((String)map.get("user"));
 		road.setCourseSize((int)map.get("courseSize"));
+		road.setDescription((String)map.get("description"));
 		System.out.println("course size: "+road.getCourseSize());
 		
 		List<String> planlist = (List<String>)map.get("plan");
@@ -220,24 +221,28 @@ public class RoadController {
 	@PostMapping("/roadUpExe")
 	@ResponseBody
 	public String roadUpdateExecute(@RequestBody Map<String, Object> map) {
-		System.out.println(map);
+		System.out.println("update IN : "+map);
 		
 		Road road = new Road();
-//		
+		road.setRoadId((String)map.get("roadId"));
 		road.setCategory((String)map.get("category"));
 		road.setCourseSize((int)map.get("courseSize"));
 		List<String> planlist = (List<String>)map.get("plan");
 		String[] planary = planlist.toArray(new String[0]);
 		road.setCourse(planary);
-		
+		System.out.println(road.getRoadId());
 //		System.out.println(road.getCourseToString());
 		roadService.roadUpdate(road);
 		
 		return "end"; 
 	}
 	
-	@GetMapping("/rodaDelete")
-	public String roaddelete() {
-		return "road/roaddelete";
+	@GetMapping("/roadDelete")
+	public String roaddelete(@RequestParam("id") String id) {
+		System.out.println("삭제할 id : "+id);
+		
+		roadService.roadDelete(id);		
+		
+		return "redirect:readRoad";
 	}
 }

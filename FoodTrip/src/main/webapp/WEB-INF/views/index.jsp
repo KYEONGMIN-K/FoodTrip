@@ -1,8 +1,10 @@
 <%@ page isELIgnored="false" language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <html>
+<head>
+<link rel="stylesheet" href="/FoodTrip/resources/css/menu.css"/>
+</head>
 <body>
-<a href="test">테스트</a>
+	<%@ include file="./menu/menu.jsp" %>
 </body>
 </html>
