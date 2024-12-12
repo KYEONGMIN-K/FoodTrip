@@ -21,8 +21,8 @@
         <p><small class="text-muted">작성자: <%= board.getNickName() %> | 작성일: <%= board.getCreateTime() %></small></p>
         <!-- 게시글 수정/삭제 버튼 -->
         <% if (sessionId != null && sessionId.getNickName().equals(board.getNickName())) { %>
-            <a href="/FoodTrip/updateBoard?num=<%= board.getBrdNum() %>" class="btn btn-primary">수정</a>
-            <a href="/FoodTrip/deleteBoard?num=<%= board.getBrdNum() %>" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+            <a href="/updateBoard?num=<%= board.getBrdNum() %>" class="btn btn-primary">수정</a>
+            <a href="/deleteBoard?num=<%= board.getBrdNum() %>" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
         <% } %>
         <hr>
 
@@ -38,11 +38,13 @@
         <% for (int i = 0; i < comments.size(); i++) {
             Board comment = comments.get(i);
             System.out.println("뎁스 : " + comment.getDepth());
-        	if(comment.getDepth()==2 && !comment.getContent().equals("삭제된 메시지입니다")){
+        	if(comment.getDepth()==2){
         %>
 	       	<div class="mb-3" style="margin-left:20px;">
 			    <p class="commentContent"><%= comment.getContent() %></p>
-			    <p><small class="text-muted">작성자: <%= comment.getNickName() %> | 작성일: <%= comment.getCreateTime() %></small></p>		
+			    <p><small class="text-muted">작성자: <%= comment.getNickName() %> | 작성일: <%= comment.getCreateTime() %></small></p>
+				
+		<%		if(!comment.getContent().equals("삭제된 메시지입니다")){ %>		
 				<button class="btn btn-sm btn-secondary replyButton" 
 	        			data-id="<%= comment.getBrdNum() %>" data-depth="3">답글</button>
 			    <!-- 수정 버튼 및 삭제 버튼 -->
@@ -58,16 +60,13 @@
 			        <button class="btn btn-sm btn-secondary cancelEdit">취소</button>
 			    </div>
 	    	</div>
-	    	<hr>
-	        <%
-	        }else if(comment.getDepth()==2 &&comment.getContent().equals("삭제된 메시지입니다")){%>
-	        	<div class="mb-3" style="margin-left:20px;">삭제된 메시지입니다</div>
-	        	<hr>
-	        <% } 
-        	else if(comment.getDepth()==3 && !comment.getContent().equals("삭제된 메시지입니다")){%>
+	        <%	} 
+	        } 
+        	else if(comment.getDepth()==3){%>
         		<div class="mb-3" style="margin-left:40px;">
 				    <p class="commentContent"><%= comment.getContent() %></p>
 				    <p><small class="text-muted">작성자: <%= comment.getNickName() %> | 작성일: <%= comment.getCreateTime() %></small></p>
+					<%if(!comment.getContent().equals("삭제된 메시지입니다")){ %>
 					<button class="btn btn-sm btn-secondary replyButton" 
 		        			data-id="<%= comment.getBrdNum() %>" data-depth="3">답글</button>
 				    <!-- 수정 버튼 및 삭제 버튼 -->
@@ -83,15 +82,12 @@
 				        <button class="btn btn-sm btn-secondary cancelEdit">취소</button>
 				    </div>
 	    		</div>
-	    		<hr>
-	       	<%}else if(comment.getDepth()==3 && comment.getContent().equals("삭제된 메시지입니다")){ %>
-	       		<div class="mb-3" style="margin-left:40px;">삭제된 메시지입니다</div>
-	       		<hr>
-	       	<%	}
+	       	<%		}	
+	      	 	}
         	} %>
 
     <!-- JavaScript for 댓글 AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/FoodTrip/resources/js/board.js?version=6" type="text/javascript"></script>
+    <script src="/FoodTrip/resources/js/board.js?version=5" type="text/javascript"></script>
 </body>
 </html>

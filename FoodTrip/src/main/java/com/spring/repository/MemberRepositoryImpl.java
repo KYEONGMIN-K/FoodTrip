@@ -64,33 +64,9 @@ public class MemberRepositoryImpl implements MemberRepository {
 		template.update(SQL, member.getPassword(), member.getNickName(), member.getGender(), member.getAge(), member.getBadgeName(), member.getEmail());
 	}
 	
-	// 회원정보 삭제하기 : Delete
 	public void setDeleteMember(String email) {
 		System.out.println("setDeleteMember()실행 이메일 : " + email);
 		String SQL = "DELETE FROM Member WHERE email = ?";
 		template.update(SQL, email);
-	}
-	
-	// 회원 메일 중복 확인
-	public boolean existMail(String id) {
-		String SQL = "SELECT * FROM member WHERE email = ?";
-		List<Member> member = template.query(SQL, new Object[]{id},new MemberRowMapper());
-		if(!member.isEmpty()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	// 회원가입 닉네임 중복 확인
-	public boolean findOneNickName(String nickName) {
-		String SQL = "SELECT * FROM member WHERE nickName = ?";
-		List<Member> member = template.query(SQL, new Object[]{nickName},new MemberRowMapper());
-		if(!member.isEmpty()) {
-			return true;
-		}else {
-			return false;
-		}
-		
 	}
 }

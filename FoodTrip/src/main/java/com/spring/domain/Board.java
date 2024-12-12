@@ -2,8 +2,6 @@ package com.spring.domain;
 
 import java.sql.Timestamp;
 
-
-
 public class Board {
 
 	private long brdNum;         	// 게시글 번호 (Primary Key)
@@ -24,24 +22,7 @@ public class Board {
 
 	public Board() {}
     
-    public Board(long brdNum, long parentNum, String nickName, String title, String content, String createTime,
-			String ip, int likes, int views, int depth, String updateDay, String path) {
-		super();
-		this.brdNum = brdNum;
-		this.parentNum = parentNum;
-		this.nickName = nickName;
-		this.title = title;
-		this.content = content;
-		this.createTime = createTime;
-		this.ip = ip;
-		this.likes = likes;
-		this.views = views;
-		this.depth = depth;
-		this.updateDay = updateDay;
-		this.path = path;
-	}
-
-	public Board(long brdNum, String nickName, String title, String createTime, int likes, int views) {
+    public Board(long brdNum, String nickName, String title, String createTime, int likes, int views) {
 		this.brdNum = brdNum;
 		this.nickName = nickName;
 		this.title = title;

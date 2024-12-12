@@ -21,41 +21,31 @@
   </properties>
   <name>FoodTrip Maven Webapp</name>
   <url>http://maven.apache.org</url>
-  
   <dependencies>
   	<!-- Spring framework에서 spring-context 객체를 지정된 버전을 가져옴 -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${org.springframework-version}</version>
-            <exclusions>
-                <!-- Exclude Commons Logging in favor of SLF4j -->
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                 </exclusion>
-            </exclusions>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${org.springframework-version}</version>
-        </dependency>  
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${org.springframework-version}</version>
-        </dependency>
-      
-      
+  	 <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${org.springframework-version}</version>
+         <!-- 로그를 남기는 commons-logging 객체는 빼고 주세요 -->
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+             </exclusion>
+         </exclusions>
+      </dependency>
+      <!-- Spring Framework에서 sping-webmvc 객체를 주세요-->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-webmvc</artifactId>
+         <version>${org.springframework-version}</version>
+      </dependency>
       <dependency>
          <groupId>org.sonatype.aether</groupId>
          <artifactId>aether-api</artifactId>
          <version>1.7</version>
       </dependency>
- 
-      
       <!-- jstl -->
     <dependency>
 	    <groupId>javax.servlet</groupId>
@@ -91,19 +81,6 @@
 	    <artifactId>mysql-connector-java</artifactId>
 	    <version>8.0.24</version>
 	</dependency>
-	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.7</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.json/json -->
-    <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20231013</version>
-    </dependency>
     
     <!-- FILE I/O -->
     <dependency>
@@ -118,33 +95,12 @@
 	</dependency>
     
     <!-- Jackson Databind -->
-    <!-- Email Authentication -->
-   <dependency>
+    <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.15.2</version> <!-- 최신 버전으로 변경 -->
+        <version>${jackson.version}</version>
     </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>2.15.2</version> <!-- 최신 버전으로 변경 -->
-    </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>2.15.2</version> <!-- 최신 버전으로 변경 -->
-    </dependency>
-    <!-- email-->
-    <dependency>
-        <groupId>javax.mail</groupId>
-        <artifactId>mail</artifactId>
-        <version>1.4.7</version>
-    </dependency> 
-    <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>1</version>
-    </dependency>
+    
   </dependencies>
   <build>
     <finalName>FoodTrip</finalName>

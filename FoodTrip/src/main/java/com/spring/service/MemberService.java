@@ -10,7 +10,5 @@ public interface MemberService {
 	void setNewMember(Member member);
 	void setUpdateMember(Member member);
 	void setDeleteMember(String email);
-	boolean existMail(String id);
-	boolean findOneNickName(String nickName);
 
 }

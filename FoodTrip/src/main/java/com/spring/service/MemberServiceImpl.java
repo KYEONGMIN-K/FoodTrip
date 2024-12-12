@@ -31,12 +31,4 @@ public class MemberServiceImpl implements MemberService{
 	public void setDeleteMember(String email) {
 		memberRepository.setDeleteMember(email);
 	}
-	
-	public boolean existMail(String id) {
-		return memberRepository.existMail(id);
-	}
-
-	public boolean findOneNickName(String nickName) {
-		return memberRepository.findOneNickName(nickName);
-	}
 }
