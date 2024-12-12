@@ -51,7 +51,7 @@ public class RoadController {
 
 	@GetMapping("/makeRoad")
 	public String createRoad() {
-		return "road/roadForm";
+		return "road/roadMake";
 	}
 
 	@GetMapping("/readMkAll")
@@ -80,6 +80,7 @@ public class RoadController {
 		road.setCategory((String)map.get("category"));
 		road.setUserNick((String)map.get("user"));
 		road.setCourseSize((int)map.get("courseSize"));
+		road.setDescription((String)map.get("description"));
 		System.out.println("course size: "+road.getCourseSize());
 		
 		List<String> planlist = (List<String>)map.get("plan");
@@ -158,7 +159,6 @@ public class RoadController {
 			String[] tmp = new String[roadOne.getCourseSize()];
 			//2. 리스트 요소 내 마커 리스트에 접근
 			//System.out.println("rd id in read " + roadOne.getRoadId());
-			List<Marker> mList = new ArrayList<Marker>();
 			//System.out.println("rd size in read " + roadOne.getCourseSize());
 			System.out.println("tmp size : "+tmp.length);
 			for(int j=0; j<roadOne.getCourseSize(); j++) {
@@ -170,6 +170,22 @@ public class RoadController {
 			}
 			roadOne.setPoints(find);
 		} 
+	}
+	
+	public void findMarker(Road road) {
+		ArrayList<Marker> find = new ArrayList<Marker>();
+		Road roadOne = road;
+		String[] tmp = new String[roadOne.getCourseSize()];
+		//2. 리스트 요소 내 마커 리스트에 접근
+		System.out.println("tmp size : "+tmp.length);
+		for(int j=0; j<roadOne.getCourseSize(); j++) {
+			tmp = roadOne.getCourse();	//주소값만 받음.
+			System.out.println("tmp in size : "+tmp.length);
+			Marker mk = markerService.markerReadOne(tmp[j]);
+			System.out.println(mk.getmarkerId());
+			find.add(mk);
+		}
+		roadOne.setPoints(find);
 	}
 	
 	//Road Read One
@@ -188,7 +204,9 @@ public class RoadController {
 		id = id.trim();
 		System.out.println("바꿔줄래? : "+id);
 		Road road = roadService.roadReadOne(id); 
-		
+		//가져온 로드 하나에 마커 정보 입력
+		findMarker(road);
+				
 		String itemJson = g.toJson(road);
 		
 		System.out.println("가져온 하나 : "+ itemJson);
@@ -201,13 +219,30 @@ public class RoadController {
 	}
 	
 	@PostMapping("/roadUpExe")
-	public String roadUpdateExecute() {
+	@ResponseBody
+	public String roadUpdateExecute(@RequestBody Map<String, Object> map) {
+		System.out.println("update IN : "+map);
 		
-		return ""; 
+		Road road = new Road();
+		road.setRoadId((String)map.get("roadId"));
+		road.setCategory((String)map.get("category"));
+		road.setCourseSize((int)map.get("courseSize"));
+		List<String> planlist = (List<String>)map.get("plan");
+		String[] planary = planlist.toArray(new String[0]);
+		road.setCourse(planary);
+		System.out.println(road.getRoadId());
+//		System.out.println(road.getCourseToString());
+		roadService.roadUpdate(road);
+		
+		return "end"; 
 	}
 	
-	@GetMapping("/rodaDelete")
-	public String roaddelete() {
-		return "road/roaddelete";
+	@GetMapping("/roadDelete")
+	public String roaddelete(@RequestParam("id") String id) {
+		System.out.println("삭제할 id : "+id);
+		
+		roadService.roadDelete(id);		
+		
+		return "redirect:readRoad";
 	}
 }

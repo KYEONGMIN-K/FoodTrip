@@ -5,13 +5,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="/FoodTrip/resources/css/menu.css"/>
 </head>
 <body>
-	<div id=map style="width:70%;height:550px;">
+	<%@ include file="../menu/menu.jsp" %>
+	<div id=map style="width:100%;height:550px;">
 		<!-- 지도 공간  -->
 		
 	</div>
 	<!-- 코스 리스트 -->
+	<h2>생성되어 있는 코스</h2>
 	<ul id="placesList">
 	
 	</ul>
@@ -21,15 +24,15 @@
 	<script>
 	var courseObj=[];
 	var markers = [];
-	var sw = new kakao.maps.LatLng(35.180809, 128.547572),
-		ne = new kakao.maps.LatLng(35.251352, 128.731078);
+	var sw = new kakao.maps.LatLng(35.0966621, 128.4888436),
+		ne = new kakao.maps.LatLng(35.3108556, 128.8502120);
 	
 	var listEl = document.querySelector('#placesList');
 	// 지도 출력을 위한 기본적인 코드 -------- START
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	    mapOption = { 
 	        center: new kakao.maps.LatLng(35.2538433, 128.6402609), // 지도의 중심좌표
-	        level: 6 // 지도의 확대 레벨
+	        level: 9 // 지도의 확대 레벨
 	    };
 	
 	// 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
@@ -38,6 +41,7 @@
 	
 	getAllRoad();
 		
+	// 처음 요청을 보내 모든 코스정보를 받아오는 함수
 	function getAllRoad(){
 		$.ajax({
 			url : "readRoad",
@@ -51,17 +55,29 @@
 		});
 	}
 	
+	//리스트에 코스를 표시하는 함수
 	function addList(){
-		//리스트에 코스를 표시하는 함수
-		//courseObj : 요청에 대한 응답 json 배열
-		
+		//courseObj : 요청에 대한 응답 json 배열		
 		for(var i=0; i<courseObj.length; i++){
 			
 			(function(index){
 				var data = courseObj[index];
+				//console.log(data);
+			//	var courseAry = data.points;
+				var courseName = [];
+				for(var j=0; j<data.points.length; j++){
+					courseName[j] = data.points[j].pointName;
+				}
+				var courseString = courseName.join(" -> ");
+				//console.log(courseAry);
 				var list = document.createElement('li');
 				list.setAttribute("id", "cslist");
-				list.innerHTML = '<div>'+data.category+'</div><br><div>'+data.roadId+'</div><br><div><a href="/FoodTrip/road/roadUpdate?id='+data.roadId+'">수정</a><a href="/FoodTrip/road/roadDelete?id='+data.roadId+'">삭제</a></div>'
+				list.innerHTML = '<div>'+data.category+'</div><br><div>'
+								+data.description+'</div><br><h3>코스</h3><div>'
+								+ courseString +'</div><br>'
+								+'<div><a href="/FoodTrip/road/roadUpdate?id='
+								+data.roadId+'">수정</a><a href="/FoodTrip/road/roadDelete?id='
+								+data.roadId+'">삭제</a></div>'
 				list.addEventListener("click", function(){
 					viewMarker(data);					
 				});
@@ -71,6 +87,7 @@
 		}
 	}
 	
+	//코스 리스트를 클릭하면 마커가 지도에 보이게
 	function viewMarker(data){ 
 		//console.log(data);
 		//console.log(data.points);
@@ -98,7 +115,7 @@
 			            position: placePosition, // 마커의 위치
 			            image: markerImage 
 			        });
-					console.log(map);
+					//console.log(map);
 					 marker.setMap(map); // 지도 위에 마커를 표출합니다
 					 markers.push(marker);  // 배열에 생성된 마커를 추가합니다
 
@@ -111,6 +128,7 @@
 		map.setBounds(bounds);
 	}
 	
+	//모든 마커 지우기 -- 마커 refresh
 	function markerRemove(){
 		console.log("rm IN");
 		for ( var i = 0; i < markers.length; i++ ) {

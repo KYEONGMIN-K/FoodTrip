@@ -9,5 +9,5 @@ public interface RoadRepository {
 	void roadDelete(String roadId);
 	List<Road> roadReadAll();
 	Road roadReadOne(String roadId);
-	void roadUpdate(String roadId);
+	void roadUpdate(Road road);
 }

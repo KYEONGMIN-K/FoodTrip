@@ -23,11 +23,13 @@ public class RoadRowMapper implements RowMapper<Road>{
 		System.out.println("4번완");
 		road.setCategory(rs.getString(6));
 		System.out.println("5번완");
-		road.setCreateTime(rs.getDate(7));
+		road.setDescription(rs.getString(7));
+		
+		road.setCreateTime(rs.getDate(8));
 		System.out.println("6번완");
-		road.setEndTime(rs.getDate(8));
+		road.setEndTime(rs.getDate(9));
 		System.out.println("7번완");
-		road.setCheckTimeToStrDB(rs.getString(9));
+		road.setCheckTimeToStrDB(rs.getString(10));
 		System.out.println("8번완");
 		
 		return road;

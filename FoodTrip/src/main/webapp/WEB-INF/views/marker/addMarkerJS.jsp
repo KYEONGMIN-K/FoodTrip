@@ -6,102 +6,82 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-	 <style>
-		.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
-		.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
-		.map_wrap {position:relative;width:70%;height:500px;}
-		#menu_wrap {position:absolute;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
-		.bg_white {background:#fff;}
-		#menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
-		#menu_wrap .option{text-align: center;}
-		#menu_wrap .option p {margin:10px 0;}  
-		#menu_wrap .option button {margin-left:5px;}
-		#placesList li {list-style: none;}
-		#placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
-		#placesList .item span {display: block;margin-top:4px;}
-		#placesList .item h5, #placesList .item .info {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
-		#placesList .item .info{padding:10px 0 10px 55px;}
-		#placesList .info .gray {color:#8a8a8a;}
-		#placesList .info .jibun {padding-left:26px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
-		#placesList .info .tel {color:#009900;}
-		#placesList .item .markerbg {float:left;position:absolute;width:36px; height:37px;margin:10px 0 0 10px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
-		#placesList .item .marker_1 {background-position: 0 -10px;}
-		#placesList .item .marker_2 {background-position: 0 -56px;}
-		#placesList .item .marker_3 {background-position: 0 -102px}
-		#placesList .item .marker_4 {background-position: 0 -148px;}
-		#placesList .item .marker_5 {background-position: 0 -194px;}
-		#placesList .item .marker_6 {background-position: 0 -240px;}
-		#placesList .item .marker_7 {background-position: 0 -286px;}
-		#placesList .item .marker_8 {background-position: 0 -332px;}
-		#placesList .item .marker_9 {background-position: 0 -378px;}
-		#placesList .item .marker_10 {background-position: 0 -423px;}
-		#placesList .item .marker_11 {background-position: 0 -470px;}
-		#placesList .item .marker_12 {background-position: 0 -516px;}
-		#placesList .item .marker_13 {background-position: 0 -562px;}
-		#placesList .item .marker_14 {background-position: 0 -608px;}
-		#placesList .item .marker_15 {background-position: 0 -654px;}
-		#pagination {margin:10px auto;text-align: center;}
-		#pagination a {display:inline-block;margin-right:10px;}
-		#pagination .on {font-weight: bold; cursor: default;color:#777;}
-	</style>
+<link rel="stylesheet" href="/FoodTrip/resources/css/menu.css"/>
+<style>
+ 	.wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .wrap * {padding: 0;margin: 0;}
+    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+    .info .close:hover {cursor: pointer;}
+    .info .body {position: relative;overflow: hidden;}
+    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+    .info .link {color: #5085BB;}
+</style>
 </head>
 <body>
+	<%@ include file="../menu/menu.jsp" %>
+	<div class="container">	
+		<div class="map_wrap">
+		    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
 		
-	<div class="map_wrap">
-	    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
-	
-	    <div id="menu_wrap" class="bg_white">
-	        <div class="option">
-	            <div>
-	                <form onsubmit="searchPlaces(); return false;">
-	                    키워드 : <input type="text" id="keyword" size="15"> 
-	                    <button type="submit">검색하기</button> 
-	                </form>
-	            </div>
-	        </div>
-	        <hr>
-	        <ul id="placesList"></ul>
-	        <div id="pagination"></div>
-	    </div>
+		    <div id="menu_wrap" class="bg_white">
+		        <div class="option">
+		            <div>
+		                <form onsubmit="searchPlaces(); return false;">
+		                    키워드 : <input type="text" id="keyword" size="15"> 
+		                    <button type="submit">검색하기</button> 
+		                </form>
+		            </div>
+		        </div>
+		        <hr>
+		        <ul id="placesList"></ul>
+		        <div id="pagination"></div>
+		    </div>
+		</div>
+		<div>
+			<form onsubmit="return false;">
+				<p>
+					<label>마커ID</label>
+					<input id="markerId"/>
+				</p>
+				<p>
+					<label>좌표 X</label>
+					<input id="pointX"/>
+				<p>
+					<label>좌표 Y</label>
+					<input id="pointY"/>
+				<p>
+					<label>카테고리</label>
+					<input id="category"/>
+				<p>
+					<label>장소명</label>
+					<input id="pointName"/>
+				<p>
+					<label>전화번호</label>
+					<input id="phone"/>
+				<p>
+					<label>주소</label>
+					<input id="address"/>
+				<p>
+					<label>정보보기</label>
+					<a href="#" id="urlData" target="_blank">정보보기</a>
+				<p>
+					<label>장소설명</label>
+					<textarea id="description" col="50" row="20"></textarea>
+				<p>
+					<label>장소이미지</label>
+					<input id="image" type="file"/>
+				
+				<button id="sendData">전송</button>
+			</form>
+		</div>
 	</div>
-	<div>
-		<form onsubmit="return false;">
-			<p>
-				<label>마커ID</label>
-				<input id="markerId"/>
-			</p>
-			<p>
-				<label>좌표 X</label>
-				<input id="pointX"/>
-			<p>
-				<label>좌표 Y</label>
-				<input id="pointY"/>
-			<p>
-				<label>카테고리</label>
-				<input id="category"/>
-			<p>
-				<label>장소명</label>
-				<input id="pointName"/>
-			<p>
-				<label>전화번호</label>
-				<input id="phone"/>
-			<p>
-				<label>주소</label>
-				<input id="address"/>
-			<p>
-				<label>정보보기</label>
-				<a href="#" id="urlData" target="_blank">정보보기</a>
-			<p>
-				<label>장소설명</label>
-				<textarea id="description" col="50" row="20"></textarea>
-			<p>
-				<label>장소이미지</label>
-				<input id="image" type="file"/>
-			
-			<button id="sendData">전송</button>
-		</form>
-	</div>
-	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=&libraries=services"></script>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script>
@@ -119,11 +99,12 @@
 	var send = document.querySelector("#sendData");
 	var insertKeyword = document.querySelector("#keyword");
 	var saveKeyword;
+	var overlay;
 	// 마커를 담을 배열입니다
 	var markers = [];
 	//dto 매핑 객체
 	var dtoObj ={
-			"inputdata":"",
+			//"inputdata":"",
 			"markerId":"",
 			"pointX":"",
 			"pointY":"",
@@ -169,7 +150,7 @@
 	        return false;
 	    }
 	    
-	    dtoObj.inputdata = keyword;
+	    //dtoObj.inputdata = keyword;
 	    // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
 	    ps.keywordSearch( keyword, placesSearchCB); 
 	}
@@ -254,11 +235,35 @@
 	        // 마커와 검색결과 항목에 mouseover 했을때
 	        // 해당 장소에 인포윈도우에 장소명을 표시합니다
 	        // mouseout 했을 때는 인포윈도우를 닫습니다
-	        (function(marker, title) {
-	            kakao.maps.event.addListener(marker, 'mouseover', function() {
-	                displayInfowindow(marker, title);
+	        (function(marker, data) {
+	            kakao.maps.event.addListener(marker, 'click', function() {
+	            	var content = '<div class="wrap">' + 
+	            	'    <div class="info">' + 
+	                '        <div class="title">' + 
+	                '            '+ data.place_name + 
+	                '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+	                '        </div>' + 
+	                '        <div class="body">' + 
+	                '            <div class="img">' +
+	                '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+	                '           </div>' + 
+	                '            <div class="desc">' + 
+	                '                <div class="ellipsis">'+ data.road_address_name +'</div>' +  
+	                '                <div><a href='+ data.place_url  +' target="_blank" class="link">사이트이동</a></div>' + 
+	                '            </div>' + 
+	                '        </div>' + 
+	                '    </div>' +    
+	                '</div>';	            	
+	            	
+	            	overlay = new kakao.maps.CustomOverlay({
+	            	    content: content,
+	            	    map: map,
+	            	    position: marker.getPosition()       
+	            	});
+	            	
+	            	overlay.setMap(map);
 	            });
-
+/*
 	            kakao.maps.event.addListener(marker, 'mouseout', function() {
 	                infowindow.close();
 	            });
@@ -269,8 +274,8 @@
 
 	            itemEl.onmouseout =  function () {
 	                infowindow.close();
-	            };
-	        })(marker, places[i].place_name);
+	            };*/
+	        })(marker, places[i]);
 	        
 	        
 	        fragment.appendChild(itemEl);
@@ -284,6 +289,10 @@
 	    map.setBounds(bounds);
 	}
 
+	function closeOverlay() {
+	    overlay.setMap(null);     
+	}
+	
 	// 검색결과 항목을 Element로 반환하는 함수입니다
 	function getListItem(index, places) {
 
@@ -451,7 +460,7 @@
 				if(response){
 					alert("마커 저장완료");
 					console.log(response);
-					insertKeyword.value = response.inputdata;
+					//insertKeyword.value = response.inputdata;
 					//$("#keyword").val(response.inputdata);
 				}else{
 					alert("마커 데이터가 이미 존재합니다.");

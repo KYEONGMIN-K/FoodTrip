@@ -22,8 +22,7 @@ public class RoadServiceImpl implements RoadService{
 
 	@Override
 	public void roadDelete(String roadId) {
-		// TODO Auto-generated method stub
-		
+		roadRepository.roadDelete(roadId);		
 	}
 
 	@Override
@@ -40,9 +39,8 @@ public class RoadServiceImpl implements RoadService{
 	}
 
 	@Override
-	public void roadUpdate(String roadId) {
-		// TODO Auto-generated method stub
-		
+	public void roadUpdate(Road road) {
+		roadRepository.roadUpdate(road);		
 	}
 	
 

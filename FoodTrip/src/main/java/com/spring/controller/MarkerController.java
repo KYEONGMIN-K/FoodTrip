@@ -334,6 +334,8 @@ public class MarkerController {
 	 */
 	@GetMapping("/delete")
 	public String markerDelete(@RequestParam("id") String markerId) {
+		System.out.println("delete IN"+markerId);
+		
 		markerService.markerDelete(markerId);
 		
 		return "redirect:readalljson";

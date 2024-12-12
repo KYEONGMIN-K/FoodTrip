@@ -18,6 +18,7 @@ public class Road {
 	private Date endTime;
 	private Date[] checkTime;
 	private String checkTimeToStrDB;
+	private String description;
 	
 	public String getRoadId() {
 		return roadId;
@@ -95,6 +96,14 @@ public class Road {
 		//course = new String[courseSize];
 		this.course = courseToString.split(",");		
 	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	
 	
 /*
 	private String roadMaker;
