@@ -27,7 +27,7 @@
 				이메일 혹인 비밀번호가 일치하지 않습니다.<br/>
 			</div>
 			<%} %>
-		<a href="addMember">회원가입</a>
+		<a href="email">회원가입</a>
 	</form:form>
 </body>
 </html>

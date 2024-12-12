@@ -24,7 +24,7 @@
 	<a href="update">회원정보수정</a>
 <%}else{%>
 	<a href="login">로그인</a>
-	<a href="addMember">회원가입</a>
+	<a href="email">회원가입</a>
 <%} %>
 
 <a href="boards">리뷰게시판</a>

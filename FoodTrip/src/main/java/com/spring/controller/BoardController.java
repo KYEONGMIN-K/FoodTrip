@@ -95,10 +95,13 @@ public class BoardController {
 	    if (sessionId == null || !board.getNickName().equals(sessionId.getNickName())) {
 	    	return "redirect:/login";
 	    }
-	    
-	    
 	    // 댓글 조회
 	    List<Board> comments = boardService.getCommentsByBoardId(brdNum);
+	    System.out.println("코멘츠 : " + comments);
+	    for(int i=0; i<comments.size(); i++) {
+	    	int depth = comments.get(i).getDepth();
+	    	System.out.println("조회뎁스" + depth);
+	    }
 	    if (comments == null) {
 	        comments = new ArrayList<>(); // null 방지를 위해 빈 리스트로 초기화
 	    }
@@ -107,14 +110,11 @@ public class BoardController {
 	    model.addAttribute("comments", comments);
 	    boardService.setViews(brdNum); // 조회수 증가
 	    return "Board/BoardView";
-		
-		
-		
 	}
 	
 	// 게시글 수정 : Update
 	@GetMapping("/updateBoard")
-	public String updateBoard(@ModelAttribute("uptBrd") Board board, @RequestParam("num") long brdNum,Model model,HttpSession session) { // @ModelAttribute("uptBrd") Board board,	@RequestParam("num") long brdNum, @RequestParam("pageNum") int pageNum,	Model model,HttpServletRequest request
+	public String updateBoard(@ModelAttribute("uptBrd") Board board, @RequestParam("num") long brdNum,Model model,HttpSession session) { 	
 		System.out.println("updateBoard()실행 : 게시글 수정 폼 제공");
 		
 		Member sessionId = (Member) session.getAttribute("sessionId");
@@ -123,26 +123,27 @@ public class BoardController {
         }
 
         board = boardService.getOneBoard(brdNum);
+        System.out.println("보드" + board);
         if (board == null || !board.getNickName().equals(sessionId.getNickName())) {
             return "redirect:/boards";
         }
 
         model.addAttribute("board", board);
-        return "Board/updateBoard";
+        return "/Board/updateBoard";
 
 	}
 
 	@PostMapping("/updateBoard")
-	public String submitUpdateBoard(@ModelAttribute("uptBrd") Board board, HttpSession session) { // @RequestParam("num")long brdNum
+	public String submitUpdateBoard(@ModelAttribute("uptBrd") Board board,@RequestParam("num")long BrdNum, HttpSession session) { // @RequestParam("num")long brdNum
 		System.out.println("submitUpdateBoard() 실행 : 게시글 수정 시작");
 		Member sessionId = (Member) session.getAttribute("sessionId");
 		if (sessionId == null || !board.getNickName().equals(sessionId.getNickName())) {
 	           return "redirect:/login";
 		}
-
+		board.setBrdNum(BrdNum);
 		board.setUpdateDay(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Timestamp(System.currentTimeMillis())));
 		boardService.setUpdateBoard(board);
-
+		
 		return "redirect:/BoardView?num=" + board.getBrdNum();
 		
 	}
@@ -171,12 +172,12 @@ public class BoardController {
 	@PostMapping("/comment")
 	public String comment(@RequestBody HashMap<String,Object> map, HttpServletRequest request) { 
 		System.out.println("comment() 실행");
-		
 		Board comment = new Board();
         comment.setNickName(map.get("nickName").toString());
         comment.setContent(map.get("content").toString());
         comment.setParentNum(Long.parseLong(map.get("parentNum").toString()));
         comment.setDepth(Integer.parseInt(map.get("depth").toString()));
+        System.out.println("컨트롤러뎁스 : " + comment.getDepth());
         comment.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Timestamp(System.currentTimeMillis())));
         comment.setIp(request.getRemoteAddr());
         boardService.addComment(comment);
