@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.spring.domain.Marker;
+import com.spring.domain.Member;
 import com.spring.service.MarkerService;
 
 @Controller
@@ -41,6 +43,16 @@ public class MarkerController {
 	
 	@Autowired
 	private MarkerService markerService;
+	
+	
+	@GetMapping("/test")
+	public String markertest(HttpSession session, Member member) {
+		Member sessionId = (Member) session.getAttribute("sessionId");
+        if (sessionId == null) {
+            return "redirect:/login";
+        }
+		return "marker/addMarkerJS";
+	}
 	
 	//-------   CREATE   -------
 	
@@ -361,7 +373,7 @@ public class MarkerController {
 	 * Param : String, Model
 	 * return : String
 	 */	
-	//@GetMapping("/update")
+	
 	public String markerUpdateView(@RequestParam("id") String markerId, Model model) {
 		System.out.println("update IN : "+markerId);
 		Marker marker = markerService.markerReadOne(markerId);
@@ -373,7 +385,7 @@ public class MarkerController {
 		return "marker/updateForm";
 	}
 	
-//	@PostMapping("/update")
+	
 	public String markerUpdateExecute(@ModelAttribute("UpdateMarker") Marker marker, HttpServletRequest req) {
 		System.out.println("update Execute IN");
 		String realpath = req.getServletContext().getRealPath("resources/images"); 
