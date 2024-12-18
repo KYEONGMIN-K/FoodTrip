@@ -11,7 +11,7 @@ public class MemberRowMapper implements RowMapper<Member>{
 
 	@Override
 	public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-		System.out.println("mapRow() 실행");
+		System.out.println("Member의 mapRow() 실행");
 		Member mb = new Member();
 		mb.setEmail(rs.getString(1));
 		System.out.println("이메일 : " + rs.getString(1));

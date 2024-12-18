@@ -28,7 +28,22 @@ public class MemberServiceImpl implements MemberService{
 		memberRepository.setUpdateMember(member);
 	}
 	
+	public boolean existMail(String id) {
+		return memberRepository.existMail(id);
+	}
+	public boolean findOneNickName(String nickName) {
+		return memberRepository.findOneNickName(nickName);
+	}
+	
 	public void setDeleteMember(String email) {
 		memberRepository.setDeleteMember(email);
+	}
+	
+	public List<Member> getAllMembers(int offset, int limit, int memberlist){
+		return memberRepository.getAllmembers(offset, limit, memberlist);
+	}
+	
+	public double getMemberCount() {
+		return memberRepository.getMemberCount();
 	}
 }
