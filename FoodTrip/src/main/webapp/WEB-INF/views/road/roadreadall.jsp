@@ -6,19 +6,27 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="/FoodTrip/resources/css/menu.css"/>
+<style>
+	.contain{
+		display:flex;
+	}
+</style>
 </head>
 <body>
 	<%@ include file="../menu/menu.jsp" %>
+<div class="contain">
 	<div id=map style="width:100%;height:550px;">
 		<!-- 지도 공간  -->
 		
 	</div>
 	<!-- 코스 리스트 -->
-	<h2>생성되어 있는 코스</h2>
-	<ul id="placesList">
-	
-	</ul>
-	
+	<div>
+		<h2>생성되어 있는 코스</h2>
+		<ul id="placesList">
+		
+		</ul>
+	</div>
+</div>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey="></script>
 	<script>

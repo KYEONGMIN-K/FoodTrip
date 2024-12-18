@@ -99,10 +99,13 @@
 	var send = document.querySelector("#sendData");
 	var insertKeyword = document.querySelector("#keyword");
 	var saveKeyword;
+	var overlays = [];
 	var overlay;
+	var overlay_num;
 	// 마커를 담을 배열입니다
 	var markers = [];
 	//dto 매핑 객체
+	var dtoObjAry = [];
 	var dtoObj ={
 			//"inputdata":"",
 			"markerId":"",
@@ -132,7 +135,7 @@
 
 	
 	//이벤트 할당
-	send.addEventListener('click', sendData);
+	send.addEventListener('click', sendAllData);
 	
 	
 	//setInsertKey();
@@ -231,17 +234,20 @@
 	        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
 	        // LatLngBounds 객체에 좌표를 추가합니다
 	        bounds.extend(placePosition);
-
+	        
 	        // 마커와 검색결과 항목에 mouseover 했을때
 	        // 해당 장소에 인포윈도우에 장소명을 표시합니다
 	        // mouseout 했을 때는 인포윈도우를 닫습니다
 	        (function(marker, data) {
+	        	overlay_num = overlays.length;
+				setDTO(data);
+				//console.log(data);
 	            kakao.maps.event.addListener(marker, 'click', function() {
 	            	var content = '<div class="wrap">' + 
 	            	'    <div class="info">' + 
 	                '        <div class="title">' + 
 	                '            '+ data.place_name + 
-	                '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+	                '            <div class="close" onclick="closeOverlay('+overlay_num+')" title="닫기"></div>' + 
 	                '        </div>' + 
 	                '        <div class="body">' + 
 	                '            <div class="img">' +
@@ -257,10 +263,10 @@
 	            	
 	            	overlay = new kakao.maps.CustomOverlay({
 	            	    content: content,
-	            	    map: map,
+	            	   // map: map,
 	            	    position: marker.getPosition()       
 	            	});
-	            	
+	            	overlays.push(overlay);
 	            	overlay.setMap(map);
 	            });
 /*
@@ -289,8 +295,8 @@
 	    map.setBounds(bounds);
 	}
 
-	function closeOverlay() {
-	    overlay.setMap(null);     
+	function closeOverlay(num) {
+	    overlays[num].setMap(null);     
 	}
 	
 	// 검색결과 항목을 Element로 반환하는 함수입니다
@@ -436,10 +442,12 @@
 			cate.value = data.category_name;
 			urldata.href = data.place_url;
 			desc.value = data.place_url;
-			setDTO(data);
+			//setDTO(data);
 		});
-	} 
+	}
+	
 	function setDTO(data){
+		var dtoObj = {};
 		//dtoObj.markerId:data.place_name,
 		dtoObj.pointX = data.x;
 		dtoObj.pointY = data.y;
@@ -448,20 +456,30 @@
 		dtoObj.phone = data.phone;
 		dtoObj.address = data.address_name;
 		dtoObj.description = data.place_url;
-	}	
+		dtoObjAry.push(dtoObj);
+		//console.log(dtoObjAry);
+		console.log(dtoObjAry.length);
+	}
 	
-	function sendData(){
+	function sendAllData(){
+		console.log(dtoObjAry.length);
+		for(var i=0; i<dtoObjAry.length; i++){
+        	//setDTO(data);
+        	sendData(dtoObjAry[i]);
+		}
+		dtoObjAry=[];
+	}
+	
+	function sendData(dtoOne){
 		$.ajax({
 			url : "/FoodTrip/marker/addMarker",
 			type : "post",
-			data : JSON.stringify(dtoObj),
+			async : false,
+			data : JSON.stringify(dtoOne),
 			contentType : "application/json",
 			success : function(response){
 				if(response){
-					alert("마커 저장완료");
-					console.log(response);
-					//insertKeyword.value = response.inputdata;
-					//$("#keyword").val(response.inputdata);
+					//alert("마커가 정상적으로 입력되었습니다.");   //현재 배열 요소를 한번씩 보내고 있어서 일부러 중지
 				}else{
 					alert("마커 데이터가 이미 존재합니다.");
 				}
