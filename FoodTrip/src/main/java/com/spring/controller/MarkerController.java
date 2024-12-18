@@ -36,7 +36,7 @@ public class MarkerController {
 	private static final String hotelId = "HT";
 	private static final String tourId = "TU";
 	
-	//ajax 요청응답을 위해 사용
+	//ajax 
 	Gson g = new Gson();
 	
 	@Autowired
@@ -47,7 +47,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.07 
 	 * editor : KYEONGMIN
-	 * Marker 생성 Form View로 이동 , GET() 
+	 * Marker �깮�꽦 Form View濡� �씠�룞 , GET() 
 	 * Param : none
 	 * return : String
 	 */
@@ -59,7 +59,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.08
 	 * editor : KYEONGMIN
-	 * Marker 생성 Form 입력 후 ajax를 통해 발생된 요청을 받은 후 DB로 입력 , POST() 
+	 * Marker �깮�꽦 Form �엯�젰 �썑 ajax瑜� �넻�빐 諛쒖깮�맂 �슂泥��쓣 諛쏆� �썑 DB濡� �엯�젰 , POST() 
 	 * Param : HashMap<String, Object>, HttpSerlvetRequest
 	 * return : String
 	 */
@@ -80,12 +80,12 @@ public class MarkerController {
 		String pname = marker.getPointName();
 		String paddr = marker.getAddress();
 		
-		//	중복 확인
+		//	以묐났 �솗�씤
 		Boolean ie = markerService.isExist(pname, paddr);
 		if(ie) {
 			return null;
 		}
-		//카테고리에 따라 마커 분류
+		//移댄뀒怨좊━�뿉 �뵲�씪 留덉빱 遺꾨쪟
 		String tmp = marker.getCategory();
 		tmp = tmp.replaceAll("\\s+", "");
 		String cate[] = tmp.split(">");
@@ -93,14 +93,14 @@ public class MarkerController {
 		
 		for(int i=0; i<cate.length; i++)
 			System.out.println(cate[i]);
-		//카테고리에 따라 ID부여
-		if(cate[0].equals("음식점")) {
+		//移댄뀒怨좊━�뿉 �뵲�씪 ID遺��뿬
+		if(cate[0].equals("�쓬�떇�젏")) {
 			//System.out.println(restId+numToStr);
 			marker.setmarkerId(restId);
 		}else { 
-			if(result[0].equals("관광")){
+			if(result[0].equals("愿�愿�")){
 				marker.setmarkerId(tourId);
-			}else if(result[0].equals("숙박")) {
+			}else if(result[0].equals("�닕諛�")) {
 				marker.setmarkerId(hotelId);
 			}
 		}
@@ -116,9 +116,9 @@ public class MarkerController {
 		}
 		if(imageName != null && !imageName.isEmpty()) {
 			try {
-				System.out.println("imageName null 아님");
+				System.out.println("imageName null �븘�떂");
 				file.transferTo(f);
-				System.out.println("파일 trans완료");
+				System.out.println("�뙆�씪 trans�셿猷�");
 				marker.setImageName(imageName);
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -137,7 +137,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.09
 	 * Editor : KYEONGMIN
-	 * Description : Marker 리스트 View로 이동하는 메서드 : GET()
+	 * Description : Marker 由ъ뒪�듃 View濡� �씠�룞�븯�뒗 硫붿꽌�뱶 : GET()
 	 * Param : Model
 	 * Return : ResponseEntity<String>
 	 */
@@ -150,7 +150,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.09
 	 * Editor : KYEONGMIN
-	 * Description : Marker의 전체 리스트를 ajax로부터 요청 받아 JSON으로 돌려주는 메서드
+	 * Description : Marker�쓽 �쟾泥� 由ъ뒪�듃瑜� ajax濡쒕��꽣 �슂泥� 諛쏆븘 JSON�쑝濡� �룎�젮二쇰뒗 硫붿꽌�뱶
 	 * Param : Model
 	 * Return : ResponseEntity<String>
 	 */	
@@ -165,15 +165,15 @@ public class MarkerController {
 		model.addAttribute("list", list);
 		//Map<String, Marker>[] a = new HashMap<String, Marker>();
 		/*
-		 * list는 dto를 가지고 있는 배열.
-		 * 배열 하나하나는 dto의 주소를 담고 있다. 배열을 따라가면 dto가 나온다.
-		 * list[0]은 dto를 가리키며 list[0].getxxx()을 통해 해당 dto의 값을 가져올 수 있다.
+		 * list�뒗 dto瑜� 媛�吏�怨� �엳�뒗 諛곗뿴.
+		 * 諛곗뿴 �븯�굹�븯�굹�뒗 dto�쓽 二쇱냼瑜� �떞怨� �엳�떎. 諛곗뿴�쓣 �뵲�씪媛�硫� dto媛� �굹�삩�떎.
+		 * list[0]�� dto瑜� 媛�由ы궎硫� list[0].getxxx()�쓣 �넻�빐 �빐�떦 dto�쓽 媛믪쓣 媛��졇�삱 �닔 �엳�떎.
 		 * */
 	//	Map<String, String> result = new HashMap();
 		String listJson = g.toJson(list);
 		//System.out.println(listJson);
 		
-		//한글 깨짐 방지
+		//�븳湲� 源⑥쭚 諛⑹�
 		 HttpHeaders headers = new HttpHeaders();
 		 headers.setContentType(MediaType.APPLICATION_JSON);
 		 headers.set("Content-Type", "application/json; charset=UTF-8");
@@ -186,7 +186,7 @@ public class MarkerController {
 	/*
 	 * 2024. 12. 07 
 	 * Editor : KYEONGMIN
-	 * Description : Marker Update 폼 이동
+	 * Description : Marker Update �뤌 �씠�룞
 	 * Param : String, Model
 	 * return : String
 	 */
@@ -203,7 +203,7 @@ public class MarkerController {
 	/*
 	 * 2024. 12. 07 
 	 * Editor : KYEONGMIN
-	 * Description : Marker Update 수정 후 ajax를 통해 들어온 데이터 
+	 * Description : Marker Update �닔�젙 �썑 ajax瑜� �넻�빐 �뱾�뼱�삩 �뜲�씠�꽣 
 	 * Param : String, Model
 	 * return : String
 	 */
@@ -213,7 +213,7 @@ public class MarkerController {
 		System.out.println("edit execute in");
 		System.out.println(map.get("pointName"));
 		System.out.println(map.get("markerId"));
-		//전처리
+		//�쟾泥섎━
 		Marker marker = new Marker();
 		marker.setmarkerId((String)map.get("markerId"));
 		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
@@ -224,9 +224,9 @@ public class MarkerController {
 		marker.setCategory((String)map.get("category"));
 		marker.setDescription((String)map.get("description"));
 
-		//모델이동
+		//紐⑤뜽�씠�룞
 		markerService.markerUpdate(marker);
-		//리턴
+		//由ы꽩
 		
 		return "good";
 	}
@@ -260,12 +260,12 @@ public class MarkerController {
 		return list;
 	}
 	*/
-	//===================================== 아래는 JSP 동작 (현재 사용하진 않음) =========================================
+	//===================================== �븘�옒�뒗 JSP �룞�옉 (�쁽�옱 �궗�슜�븯吏� �븡�쓬) =========================================
 	
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
-	 * Marker Update 폼 작성 후 실제 삽입을 위한 DB연결 method , POST()
+	 * Marker Update �뤌 �옉�꽦 �썑 �떎�젣 �궫�엯�쓣 �쐞�븳 DB�뿰寃� method , POST()
 	 * Param : Marker, HttpServletRequest
 	 * return : String
 	 */	
@@ -275,7 +275,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
-	 * Marker 생성 폼view로 이동 , GET() 
+	 * Marker �깮�꽦 �뤌view濡� �씠�룞 , GET() 
 	 * Param : Model
 	 * return : String
 	 */
@@ -289,7 +289,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
-	 * Marker Create form 입력 후 DB로 실제 삽입하는 method , POST() 
+	 * Marker Create form �엯�젰 �썑 DB濡� �떎�젣 �궫�엯�븯�뒗 method , POST() 
 	 * Param : Marker, HttpServlet
 	 * return : String
 	 */
@@ -304,9 +304,9 @@ public class MarkerController {
 		
 		if(imageName != null && !imageName.isEmpty()) {
 			try {
-				System.out.println("imageName null 아님");
+				System.out.println("imageName null �븘�떂");
 				file.transferTo(f);
-				System.out.println("파일 trans완료");
+				System.out.println("�뙆�씪 trans�셿猷�");
 				marker.setImageName(imageName);
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -357,7 +357,7 @@ public class MarkerController {
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
-	 * Marker Update를 위한 폼view로 이동 , GET()
+	 * Marker Update瑜� �쐞�븳 �뤌view濡� �씠�룞 , GET()
 	 * Param : String, Model
 	 * return : String
 	 */	
