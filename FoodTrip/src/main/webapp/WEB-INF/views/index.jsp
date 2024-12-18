@@ -4,29 +4,44 @@
 <html>
 <%
 	HttpSession session = request.getSession(false);
-	String sessionId = null;
+	Member sessionId = null;
+	String adminCheck = null;
 	if(session != null){
-		
-		Member mb = (Member) session.getAttribute("sessionId");
-		System.out.println("세션null아님 " );
-		if(mb != null){
-			System.out.println("mb null아님");
-			sessionId = mb.getEmail();
+		sessionId = (Member)session.getAttribute("sessionId");
+		// sessionId 가 null이 아닐 때만 getNickName() 호출
+		if(sessionId != null){
+		adminCheck = (String)sessionId.getNickName();
+		System.out.println("닉네임 : " + sessionId.getNickName());
+		System.out.println("참거짓 : " + sessionId != null);
+		System.out.println("참거짓 : " + adminCheck.equals("admin"));			
 		}
 	}
 %>
 <body>
-<a href="test">테스트</a>
-<%
-	if(sessionId != null && !sessionId.isEmpty()){
-%>
-	<a href="logout">로그아웃</a>
-	<a href="update">회원정보수정</a>
-<%}else{%>
-	<a href="login">로그인</a>
-	<a href="addMember">회원가입</a>
-<%} %>
-
-<a href="boards">리뷰게시판</a>
+<div style="display:flex">
+<%	if(sessionId != null && adminCheck.equals("admin")){ %>
+	<div id="menublock">
+		<a href="/FoodTrip/allMembers">전체 회원 관리</a>
+		<a href="/FoodTrip/marker/test">마커 생성</a>
+		<a href="/FoodTrip/marker/readalljson">마커 전체 가져오기</a>
+		<a href="/FoodTrip/road/makeRoad">코스 생성</a>
+	</div>
+	<%} %>
+	<div id="menublock">
+		<a href="/FoodTrip/road/readRoad">코스 전체보기</a>
+		<a href="/FoodTrip/boards">리뷰게시판</a>
+	</div>
+	<div id="menublock">
+		<%
+		if(sessionId != null && sessionId.getNickName() != null && !sessionId.getNickName().isEmpty()){
+		%>
+			<a href="/FoodTrip/logout">로그아웃</a>
+			<a href="/FoodTrip/update">회원정보수정</a>
+		<%}else{%>
+			<a href="/FoodTrip/login">로그인</a>
+			<a href="/FoodTrip/email">회원가입</a>
+		<%} %>
+	</div>
+</div>
 </body>
 </html>

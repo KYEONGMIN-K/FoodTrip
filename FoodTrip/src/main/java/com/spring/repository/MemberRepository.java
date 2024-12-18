@@ -12,4 +12,12 @@ public interface MemberRepository {
 	void setUpdateMember(Member member);
 
 	void setDeleteMember(String email);
+	
+	boolean existMail(String id);
+	
+	boolean findOneNickName(String nickName);
+
+	List<Member> getAllmembers(int offset, int limit, int memberlist);
+
+	double getMemberCount();
 }

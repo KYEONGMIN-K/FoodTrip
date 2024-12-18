@@ -36,7 +36,7 @@ $(document).on('click', '.editComment', function () {
 });
 // 수정 취소 버튼 클릭
 $(document).on('click', '.cancelEdit', function () {
-    const parentDiv = $(this).closest('div'); // 댓글의 div
+    const parentDiv = $(this).closest('.mb-3'); // 댓글의 div
     parentDiv.find('.commentContent').show(); // 기존 댓글 다시 표시
     parentDiv.find('.editSection').hide(); // 수정 영역 숨김
 });
@@ -95,7 +95,7 @@ $(document).on('click', '.replyButton', function () {
     // 이미 입력 중인 답글이 없을 경우에만 생성
     if (replySection.length === 0) {
         const replyBox = `
-            <div class="replySection" style="margin-top: 10px;">
+            <div class="replySection">
                 <textarea class="form-control replyTextarea" placeholder="답글을 입력하세요"></textarea>
                 <button class="btn btn-sm btn-primary submitReply" data-parent="${$(this).data('id')}" data-depth="${$(this).data('depth')}">답글 작성</button>
                 <button class="btn btn-sm btn-secondary cancelReply">취소</button>

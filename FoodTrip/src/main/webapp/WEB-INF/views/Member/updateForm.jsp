@@ -22,7 +22,7 @@
 	<form:form modelAttribute="updateMember" method="post">
 		<p>이메일 : <form:input path="email" value="<%=mb.getEmail()%>" readonly="true"/> 
 		<p>비밀번호 : <form:input path="password" value="<%=mb.getPassword() %>"/>
-		<p>닉네임 : <form:input path="nickName" value="<%=mb.getNickName()%>" />
+		<p>닉네임 : <form:input path="nickName" value="<%=mb.getNickName()%>" readonly="true" />
 		<p>성별 : <div>
 					<form:radiobutton path="gender" value="Man"  />남성 
 					<form:radiobutton path="gender" value="Woman"/>여성

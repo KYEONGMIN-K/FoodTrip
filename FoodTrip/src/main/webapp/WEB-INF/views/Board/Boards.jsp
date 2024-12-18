@@ -15,6 +15,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<%@ include file="../menu/menu.jsp" %>
 	<div>전체</div>
 	<div>
 		<table border="1">
@@ -40,7 +41,6 @@
 							<td><%=notice.getCreateTime() %></td>
 						</tr>
 			<%
-					
 				}
 			%>
 				</table>

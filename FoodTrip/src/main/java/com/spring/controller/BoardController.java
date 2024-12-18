@@ -65,7 +65,7 @@ public class BoardController {
 	
 	// 게시판 게시글 전체 조회 : ReadAll
 	@GetMapping("/boards")     //파라미터가 필수요소가 아님을 설정, 기본값 1 설정
-	public String getAllBoards(@RequestParam(value = "pageNum", required = false, defaultValue = "1")int pageNum,Model model,HttpServletRequest request) {
+	public String getAllBoards(@RequestParam(value = "pageNum", required = false, defaultValue = "1")int pageNum,Model model) {
 		System.out.println("getAllBoards()실행 : 게시글 조회");
 		
 		int limit=10; // 한 페이지에 표시할 게시글 수
@@ -85,36 +85,38 @@ public class BoardController {
 	@GetMapping("/BoardView")
 	public String boardView(@RequestParam("num") long brdNum,HttpSession session,
 							Model model) 
-	{	// @RequestParam("pageNum") int pageNum, Board board, HttpServletRequest request
-		
+	{	
 		Board board = boardService.getOneBoard(brdNum);
 	    if (board == null) {
 	        return "redirect:/boards"; // 게시글이 없는 경우 목록으로 리다이렉트
 	    }
 	    Member sessionId = (Member) session.getAttribute("sessionId");
-	    if (sessionId == null || !board.getNickName().equals(sessionId.getNickName())) {
-	    	return "redirect:/login";
-	    }
-	    
-	    
-	    // 댓글 조회
-	    List<Board> comments = boardService.getCommentsByBoardId(brdNum);
-	    if (comments == null) {
-	        comments = new ArrayList<>(); // null 방지를 위해 빈 리스트로 초기화
-	    }
+        if (sessionId == null) {
+            return "redirect:/login";
+        }
+    
+    
+    // 댓글 조회
+    List<Board> comments = boardService.getCommentsByBoardId(brdNum);
+    System.out.println("코멘츠 : " + comments);
+    for(int i=0; i<comments.size(); i++) {
+    	int depth = comments.get(i).getDepth();
+    	//System.out.println("조회뎁스" + depth);
+    }
 
-	    model.addAttribute("board", board);
-	    model.addAttribute("comments", comments);
-	    boardService.setViews(brdNum); // 조회수 증가
-	    return "Board/BoardView";
-		
+
+    model.addAttribute("board", board);
+    model.addAttribute("comments", comments);
+    boardService.setViews(brdNum); // 조회수 증가
+    return "Board/BoardView";
+	
 		
 		
 	}
 	
 	// 게시글 수정 : Update
 	@GetMapping("/updateBoard")
-	public String updateBoard(@ModelAttribute("uptBrd") Board board, @RequestParam("num") long brdNum,Model model,HttpSession session) { // @ModelAttribute("uptBrd") Board board,	@RequestParam("num") long brdNum, @RequestParam("pageNum") int pageNum,	Model model,HttpServletRequest request
+	public String updateBoard(@ModelAttribute("uptBrd") Board board, @RequestParam("num") long brdNum,Model model,HttpSession session) { 
 		System.out.println("updateBoard()실행 : 게시글 수정 폼 제공");
 		
 		Member sessionId = (Member) session.getAttribute("sessionId");
@@ -123,6 +125,7 @@ public class BoardController {
         }
 
         board = boardService.getOneBoard(brdNum);
+        System.out.println("보드" + board);
         if (board == null || !board.getNickName().equals(sessionId.getNickName())) {
             return "redirect:/boards";
         }
@@ -133,13 +136,13 @@ public class BoardController {
 	}
 
 	@PostMapping("/updateBoard")
-	public String submitUpdateBoard(@ModelAttribute("uptBrd") Board board, HttpSession session) { // @RequestParam("num")long brdNum
+	public String submitUpdateBoard(@ModelAttribute("uptBrd") Board board,@RequestParam("num")long BrdNum, HttpSession session) { 
 		System.out.println("submitUpdateBoard() 실행 : 게시글 수정 시작");
 		Member sessionId = (Member) session.getAttribute("sessionId");
 		if (sessionId == null || !board.getNickName().equals(sessionId.getNickName())) {
 	           return "redirect:/login";
 		}
-
+		board.setBrdNum(BrdNum);
 		board.setUpdateDay(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Timestamp(System.currentTimeMillis())));
 		boardService.setUpdateBoard(board);
 
@@ -177,6 +180,7 @@ public class BoardController {
         comment.setContent(map.get("content").toString());
         comment.setParentNum(Long.parseLong(map.get("parentNum").toString()));
         comment.setDepth(Integer.parseInt(map.get("depth").toString()));
+        System.out.println("컨트롤러뎁스 : " + comment.getDepth());
         comment.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Timestamp(System.currentTimeMillis())));
         comment.setIp(request.getRemoteAddr());
         boardService.addComment(comment);
@@ -186,7 +190,7 @@ public class BoardController {
 	
 	// 댓글 수정 : Update
 	@ResponseBody
-	@PutMapping("/comment")
+	@PutMapping("/comment") 
 	public String updateComment(@RequestBody HashMap<String,Object> map) {
 		System.out.println("updateComment() 실행 : 댓글 수정");
 		Board brd = new Board();
