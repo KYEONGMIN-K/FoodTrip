@@ -33,336 +33,396 @@ import com.spring.service.MarkerService;
 @Controller
 @RequestMapping("/marker")
 public class MarkerController {
-	
-	private static final String restId = "RS";
-	private static final String hotelId = "HT";
-	private static final String tourId = "TU";
-	
-	Gson g = new Gson();
-	
-	@Autowired
-	private MarkerService markerService;
-	
-	@GetMapping("/test")
-	public String markertest(HttpSession session, Member member) {
-		Member sessionId = (Member) session.getAttribute("sessionId");
+   
+   private static final String restId = "RS";
+   private static final String hotelId = "HT";
+   private static final String tourId = "TU";
+   
+
+   Gson g = new Gson();
+   
+   @Autowired
+   private MarkerService markerService;
+   
+
+   @GetMapping("/test")
+   public String markertest(HttpSession session, Member member) {
+      Member sessionId = (Member) session.getAttribute("sessionId");
         if (sessionId == null) {
             return "redirect:/login";
         }
-		return "marker/addMarkerJS";
-	}
-	
-	/*
-	 * 2024.12.02 
-	 * Marker home view method , GET()
-	 * editor : KYEONGMIN
-	 * Param : none
-	 * return : String
-	 */
-	@GetMapping("/home")
-	public String markerhome() {
-		return "markerhome";
-	}
-	
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker ìƒì„± í¼viewë¡œ ì´ë™ , GET() 
-	 * Param : Model
-	 * return : String
-	 */
-	@GetMapping("/create")
-	public String markerCreate(Model model) {
-		model.addAttribute("NewMarker", new Marker());
-		
-		return "marker/addMarker";
-	}
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker Create form ì…ë ¥ í›„ DBë¡œ ì‹¤ì œ ì‚½ì…í•˜ëŠ” method , POST() 
-	 * Param : Marker, HttpServlet
-	 * return : String
-	 */
-	//@PostMapping("/create")
-	public String markerInsert(@ModelAttribute("NewMarker") Marker marker, HttpServletRequest req) {
-		
-		String realPath = req.getServletContext().getRealPath("resources/images");
-		System.out.println(realPath);
-		MultipartFile file = marker.getImage();
-		String imageName = file.getOriginalFilename();
-		File f = new File(realPath, imageName);
-		
-		if(imageName != null && !imageName.isEmpty()) {
-			try {
-				System.out.println("imageName null ì•„ë‹˜");
-				file.transferTo(f);
-				System.out.println("íŒŒì¼ transì™„ë£Œ");
-				marker.setImageName(imageName);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		markerService.markerCreate(marker);	
-		
-		return "redirect:home";
-	}
-	
-	@ResponseBody
-	@PostMapping("/addMarker")
-	public ResponseEntity<Map<String, String>> addMarker(@RequestBody HashMap<String, Object> map, HttpServletRequest req) {
-		System.out.println(map);
-		//ë§Œì•½ ê°™ì€ ë°ì´í„°ê°€ ë“¤ì–´ì˜¨ë‹¤ë©´
-		
-		
-		//ì „ì²˜ë¦¬
-		Map<String, String> saveSearch = new HashMap(); 
-		saveSearch.put("inputdata", (String)map.get("inputdata"));
-		
-		System.out.println((String)map.get("inputdata"));
-		Marker marker = new Marker();
-		//marker.setmarkerId("TEST");
-		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
-		marker.setPointY(Double.parseDouble((String)map.get("pointY")));
-		marker.setPointName((String)map.get("pointName"));
-		marker.setAddress((String)map.get("address"));
-		marker.setPhone((String)map.get("phone"));
-		marker.setCategory((String)map.get("category"));
-		marker.setDescription((String)map.get("description"));
-		String pname = marker.getPointName();
-		String paddr = marker.getAddress();
-		
-		Boolean ie = markerService.isExist(pname, paddr);
-		if(ie) {
-			return null;
-		}
-		//ì¹´í…Œê³ ë¦¬ì— ë”°ë¼ ë§ˆì»¤ ë¶„ë¥˜
-		String tmp = marker.getCategory();
-		tmp = tmp.replaceAll("\\s+", "");
-		String cate[] = tmp.split(">");
-		String result[] = cate[1].split(",");
-		
-		for(int i=0; i<cate.length; i++)
-			System.out.println(cate[i]);
-		//ì¹´í…Œê³ ë¦¬ì— ë”°ë¼ IDë¶€ì—¬
-		if(cate[0].equals("ìŒì‹ì ")) {
-			//System.out.println(restId+numToStr);
-			marker.setmarkerId(restId);
-		}else { 
-			if(result[0].equals("ê´€ê´‘")){
-				marker.setmarkerId(tourId);
-			}else if(result[0].equals("ìˆ™ë°•")) {
-				marker.setmarkerId(hotelId);
-			}
-		}
-		
-		String realPath = req.getServletContext().getRealPath("resources/images");
-		System.out.println(realPath);
-		MultipartFile file = marker.getImage();
-		String imageName = null;
-		File f = null;
-		if(file !=null) {
-			imageName= file.getOriginalFilename();
-			f = new File(realPath, imageName);
-		}
-		if(imageName != null && !imageName.isEmpty()) {
-			try {
-				System.out.println("imageName null ì•„ë‹˜");
-				file.transferTo(f);
-				System.out.println("íŒŒì¼ transì™„ë£Œ");
-				marker.setImageName(imageName);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		markerService.markerCreate(marker);
-		
-		return ResponseEntity.ok(saveSearch);
-	}
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker ReadALL method , GET()
-	 * Param : Model
-	 * return : String
-	 */
-	@GetMapping("/readall")
-	public String markerReadAll(Model model) {
-		System.out.println("readall IN");
-		List<Marker> list = markerService.markerReadAll();
-		System.out.println("readAll list get");
-		model.addAttribute("list", list);
-		return "marker/markerList";
-	}
-	
-	
-	
-	@GetMapping("/readMkAll")
-	@ResponseBody
-	public ResponseEntity<String> readMarkerAll(Model model) {
-		System.out.println("readall IN");
-		
-		List<Marker> list = markerService.markerReadAll();
-		System.out.println("readAll list get");
-		
-		model.addAttribute("list", list);
-		//Map<String, Marker>[] a = new HashMap<String, Marker>();
-		/*
-		 * listëŠ” dtoë¥¼ ê°€ì§€ê³  ìˆëŠ” ë°°ì—´.
-		 * ë°°ì—´ í•˜ë‚˜í•˜ë‚˜ëŠ” dtoì˜ ì£¼ì†Œë¥¼ ë‹´ê³  ìˆë‹¤. ë°°ì—´ì„ ë”°ë¼ê°€ë©´ dtoê°€ ë‚˜ì˜¨ë‹¤.
-		 * list[0]ì€ dtoë¥¼ ê°€ë¦¬í‚¤ë©° list[0].getxxx()ì„ í†µí•´ í•´ë‹¹ dtoì˜ ê°’ì„ ê°€ì ¸ì˜¬ ìˆ˜ ìˆë‹¤.
-		 * */
-	//	Map<String, String> result = new HashMap();
-		String listJson = g.toJson(list);
-		//System.out.println(listJson);
-		
-		//í•œê¸€ ê¹¨ì§ ë°©ì§€
-		 HttpHeaders headers = new HttpHeaders();
-		 headers.setContentType(MediaType.APPLICATION_JSON);
-		 headers.set("Content-Type", "application/json; charset=UTF-8");
-		
-		return new ResponseEntity<>(listJson, headers, HttpStatus.OK);
-	}
-	
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker ReadOne method , GET()
-	 * Param : String, Model
-	 * return : String
-	 */
-	@GetMapping("/readone")
-	public String markerReadOne(@RequestParam("id") String markerid, Model model) {
-		System.out.println("readone IN : "+markerid);
-		Marker marker = markerService.markerReadOne(markerid);
-		model.addAttribute("marker",marker);
-		
-		return "marker/markerInfo";
-	}
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker Updateë¥¼ ìœ„í•œ í¼viewë¡œ ì´ë™ , GET()
-	 * Param : String, Model
-	 * return : String
-	 */	
-	//@GetMapping("/update")
-	public String markerUpdateView(@RequestParam("id") String markerId, Model model) {
-		System.out.println("update IN : "+markerId);
-		Marker marker = markerService.markerReadOne(markerId);
-		
-		model.addAttribute("UpdateMarker", new Marker());
-		model.addAttribute("marker", marker);
-		System.out.println("update end return");
-		
-		return "marker/updateForm";
-	}
-	
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker Update í¼ ì‘ì„± í›„ ì‹¤ì œ ì‚½ì…ì„ ìœ„í•œ DBì—°ê²° method , POST()
-	 * Param : Marker, HttpServletRequest
-	 * return : String
-	 */	
-//	@PostMapping("/update")
-	public String markerUpdateExecute(@ModelAttribute("UpdateMarker") Marker marker, HttpServletRequest req) {
-		System.out.println("update Execute IN");
-		String realpath = req.getServletContext().getRealPath("resources/images"); 
-		System.out.println("image name : "+marker.getImageName());
-		
-		MultipartFile mpf = marker.getImage();
-		if(mpf != null && !mpf.isEmpty()) {
-			String imagename = mpf.getOriginalFilename();
-			File f = new File(realpath,imagename);
-			try {
-				mpf.transferTo(f);
-				marker.setImageName(imagename);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		markerService.markerUpdate(marker);
-		return "redirect:home";
-	}
-	
-	
-	@GetMapping("/markerUpdate")
-	public String markerEditView(@RequestParam("id") String markerId,Model model){
-		System.out.println("Marker Edit IN");
-		Marker marker = new Marker();
-		marker = markerService.markerReadOne(markerId);
-		model.addAttribute("marker", marker);
-		
-		return "marker/markerEditForm";
-	}
-	
-	
-	@ResponseBody
-	@PostMapping("/editexecute")
-	public String markerEditExecute(@RequestBody HashMap<String, Object> map) {
-		System.out.println("edit execute in");
-		System.out.println(map.get("pointName"));
-		System.out.println(map.get("markerId"));
-		//ì „ì²˜ë¦¬
-		Marker marker = new Marker();
-		marker.setmarkerId((String)map.get("markerId"));
-		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
-		marker.setPointY(Double.parseDouble((String)map.get("pointY")));
-		marker.setPointName((String)map.get("pointName"));
-		marker.setAddress((String)map.get("address"));
-		marker.setPhone((String)map.get("phone"));
-		marker.setCategory((String)map.get("category"));
-		marker.setDescription((String)map.get("description"));
+      return "marker/addMarkerJS";
+   }
 
-		//ëª¨ë¸ì´ë™
-		markerService.markerUpdate(marker);
-		//ë¦¬í„´
-		
-		return "good";
-	}
-	
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker delete method  , GET()
-	 * Param : String
-	 * return : String
-	 */
-	@GetMapping("/delete")
-	public String markerDelete(@RequestParam("id") String markerId) {
-		System.out.println("delete IN"+markerId);
-		
-		markerService.markerDelete(markerId);
-		
-		return "redirect:readalljson";
-	}
-	
-	/*
-	 * JSON READ
-	 * 
-	 * */
-	@GetMapping("/readalljson")
-	public String readjson() {
-		return "marker/markerListJS";
-	}
-	
-	
-	@ResponseBody
-	@PostMapping("/jsonrdall")
-	public List<Marker> getAllMarker(){
-		List<Marker> list = markerService.markerReadAll();
-				
-		return list;
-	}
-	
+   //-------   CREATE   -------
+   
+   /*
+    * 2024.12.07 
+    * editor : KYEONGMIN
+    * Marker »ı¼º Form View·Î ÀÌµ¿ , GET() 
+    * Param : none
+    * return : String
+    */
+   @GetMapping("/addMarker")
+   public String markertest() {
+      return "marker/addMarkerJS";
+   }
+   
+   /*
+    * 2024.12.08
+    * editor : KYEONGMIN
+    * Marker »ı¼º Form ÀÔ·Â ÈÄ ajax¸¦ ÅëÇØ ¹ß»ıµÈ ¿äÃ»À» ¹ŞÀº ÈÄ DB·Î ÀÔ·Â , POST() 
+    * Param : HashMap<String, Object>, HttpSerlvetRequest
+    * return : String
+    */
+   @ResponseBody
+   @PostMapping("/addMarker")
+   public String addMarker(@RequestBody HashMap<String, Object> map, HttpServletRequest req) {
+//      System.out.println(map);
+
+      Marker marker = new Marker();
+      //marker.setmarkerId("TEST");
+      marker.setPointX(Double.parseDouble((String)map.get("pointX")));
+      marker.setPointY(Double.parseDouble((String)map.get("pointY")));
+      marker.setPointName((String)map.get("pointName"));
+      marker.setAddress((String)map.get("address"));
+      marker.setPhone((String)map.get("phone"));
+      marker.setCategory((String)map.get("category"));
+      marker.setDescription((String)map.get("description"));
+      String pname = marker.getPointName();
+      String paddr = marker.getAddress();
+      
+      //   Áßº¹ È®ÀÎ
+      Boolean ie = markerService.isExist(pname, paddr);
+      if(ie) {
+         return null;
+      }
+      //Ä«Å×°í¸®¿¡ µû¶ó ¸¶Ä¿ ºĞ·ù
+      String tmp = marker.getCategory();
+      tmp = tmp.replaceAll("\\s+", "");
+      String cate[] = tmp.split(">");
+      String result[] = cate[1].split(",");
+      
+      for(int i=0; i<cate.length; i++)
+         System.out.println(cate[i]);
+      //Ä«Å×°í¸®¿¡ µû¶ó IDºÎ¿©
+      if(cate[0].equals("À½½ÄÁ¡")) {
+         //System.out.println(restId+numToStr);
+         marker.setmarkerId(restId);
+      }else { 
+         if(result[0].equals("°ü±¤")){
+            marker.setmarkerId(tourId);
+         }else if(result[0].equals("¼÷¹Ú")) {
+            marker.setmarkerId(hotelId);
+         }
+      }
+      
+      String realPath = req.getServletContext().getRealPath("resources/images");
+      //System.out.println(realPath);
+      MultipartFile file = marker.getImage();
+      String imageName = null;
+      File f = null;
+      if(file !=null) {
+         imageName= file.getOriginalFilename();
+         f = new File(realPath, imageName);
+      }
+      if(imageName != null && !imageName.isEmpty()) {
+         try {
+            System.out.println("imageName null ¾Æ´Ô");
+            file.transferTo(f);
+            System.out.println("ÆÄÀÏ trans¿Ï·á");
+            marker.setImageName(imageName);
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+      }
+      
+      markerService.markerCreate(marker);
+      
+      return "success";
+   }
+   
+   
+   
+   //-------   READ   -------   
+   
+   /*
+    * 2024.12.09
+    * Editor : KYEONGMIN
+    * Description : Marker ¸®½ºÆ® View·Î ÀÌµ¿ÇÏ´Â ¸Ş¼­µå : GET()
+    * Param : Model
+    * Return : ResponseEntity<String>
+    */
+   @GetMapping("/readalljson")
+   public String readjson() {
+      return "marker/markerListJS";
+   }
+   
+   
+   /*
+    * 2024.12.09
+    * Editor : KYEONGMIN
+    * Description : MarkerÀÇ ÀüÃ¼ ¸®½ºÆ®¸¦ ajax·ÎºÎÅÍ ¿äÃ» ¹Ş¾Æ JSONÀ¸·Î µ¹·ÁÁÖ´Â ¸Ş¼­µå
+    * Param : Model
+    * Return : ResponseEntity<String>
+    */   
+   @GetMapping("/readMkAll")
+   @ResponseBody
+   public ResponseEntity<String> readMarkerAll(Model model) {
+      System.out.println("readall IN");
+      
+      List<Marker> list = markerService.markerReadAll();
+      System.out.println("readAll list get");
+      
+      model.addAttribute("list", list);
+      //Map<String, Marker>[] a = new HashMap<String, Marker>();
+      /*
+       * list´Â dto¸¦ °¡Áö°í ÀÖ´Â ¹è¿­.
+       * ¹è¿­ ÇÏ³ªÇÏ³ª´Â dtoÀÇ ÁÖ¼Ò¸¦ ´ã°í ÀÖ´Ù. ¹è¿­À» µû¶ó°¡¸é dto°¡ ³ª¿Â´Ù.
+       * list[0]Àº dto¸¦ °¡¸®Å°¸ç list[0].getxxx()À» ÅëÇØ ÇØ´ç dtoÀÇ °ªÀ» °¡Á®¿Ã ¼ö ÀÖ´Ù.
+       * */
+   //   Map<String, String> result = new HashMap();
+      String listJson = g.toJson(list);
+      //System.out.println(listJson);
+      
+      //ÇÑ±Û ±úÁü ¹æÁö
+       HttpHeaders headers = new HttpHeaders();
+       headers.setContentType(MediaType.APPLICATION_JSON);
+       headers.set("Content-Type", "application/json; charset=UTF-8");
+      
+      return new ResponseEntity<>(listJson, headers, HttpStatus.OK);
+   }   
+      
+   //-------   UPDATE   -------
+   
+   /*
+    * 2024. 12. 07 
+    * Editor : KYEONGMIN
+    * Description : Marker Update Æû ÀÌµ¿
+    * Param : String, Model
+    * return : String
+    */
+   @GetMapping("/markerUpdate")
+   public String markerEditView(@RequestParam("id") String markerId,Model model){
+      System.out.println("Marker Edit IN");
+      Marker marker = new Marker();
+      marker = markerService.markerReadOne(markerId);
+      model.addAttribute("marker", marker);
+      
+      return "marker/markerEditForm";
+   }
+   
+   /*
+    * 2024. 12. 07 
+    * Editor : KYEONGMIN
+    * Description : Marker Update ¼öÁ¤ ÈÄ ajax¸¦ ÅëÇØ µé¾î¿Â µ¥ÀÌÅÍ 
+    * Param : String, Model
+    * return : String
+    */
+   @ResponseBody
+   @PostMapping("/editexecute")
+   public String markerEditExecute(@RequestBody HashMap<String, Object> map) {
+      System.out.println("edit execute in");
+      System.out.println(map.get("pointName"));
+      System.out.println(map.get("markerId"));
+      //ÀüÃ³¸®
+      Marker marker = new Marker();
+      marker.setmarkerId((String)map.get("markerId"));
+      marker.setPointX(Double.parseDouble((String)map.get("pointX")));
+      marker.setPointY(Double.parseDouble((String)map.get("pointY")));
+      marker.setPointName((String)map.get("pointName"));
+      marker.setAddress((String)map.get("address"));
+      marker.setPhone((String)map.get("phone"));
+      marker.setCategory((String)map.get("category"));
+      marker.setDescription((String)map.get("description"));
+
+      //¸ğµ¨ÀÌµ¿
+      markerService.markerUpdate(marker);
+      //¸®ÅÏ
+      
+      return "good";
+   }
+   
+   //-------   DELETE   -------   
+   
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker delete method  , GET()
+    * Param : String
+    * return : String
+    */
+   @GetMapping("/delete")
+   public String markerDelete(@RequestParam("id") String markerId) {
+      System.out.println("delete IN"+markerId);
+      
+      markerService.markerDelete(markerId);
+      
+      return "redirect:readalljson";
+   }
+   
+   
+   
+   /*
+   @ResponseBody
+   @PostMapping("/jsonrdall")
+   public List<Marker> getAllMarker(){
+      List<Marker> list = markerService.markerReadAll();
+            
+      return list;
+   }
+   */
+   //===================================== ¾Æ·¡´Â JSP µ¿ÀÛ (ÇöÀç »ç¿ëÇÏÁø ¾ÊÀ½) =========================================
+   
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker Update Æû ÀÛ¼º ÈÄ ½ÇÁ¦ »ğÀÔÀ» À§ÇÑ DB¿¬°á method , POST()
+    * Param : Marker, HttpServletRequest
+    * return : String
+    */   
+   
+   //-------   CREATE   -------
+
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker »ı¼º Æûview·Î ÀÌµ¿ , GET() 
+    * Param : Model
+    * return : String
+    */
+   //@GetMapping("/create")
+   public String markerCreate(Model model) {
+      model.addAttribute("NewMarker", new Marker());
+      
+      return "marker/addMarker";
+   }
+   
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker Create form ÀÔ·Â ÈÄ DB·Î ½ÇÁ¦ »ğÀÔÇÏ´Â method , POST() 
+    * Param : Marker, HttpServlet
+    * return : String
+    */
+   //@PostMapping("/create")
+   public String markerInsert(@ModelAttribute("NewMarker") Marker marker, HttpServletRequest req) {
+      
+      String realPath = req.getServletContext().getRealPath("resources/images");
+      System.out.println(realPath);
+      MultipartFile file = marker.getImage();
+      String imageName = file.getOriginalFilename();
+      File f = new File(realPath, imageName);
+      
+      if(imageName != null && !imageName.isEmpty()) {
+         try {
+            System.out.println("imageName null ¾Æ´Ô");
+            file.transferTo(f);
+            System.out.println("ÆÄÀÏ trans¿Ï·á");
+            marker.setImageName(imageName);
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+      }
+      
+      markerService.markerCreate(marker);   
+      
+      return "redirect:home";
+   }
+
+   //-------   READ   -------   
+   
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker ReadALL method , GET()
+    * Param : Model
+    * return : String
+    */
+   //@GetMapping("/readall")
+   public String markerReadAll(Model model) {
+      System.out.println("readall IN");
+      List<Marker> list = markerService.markerReadAll();
+      System.out.println("readAll list get");
+      model.addAttribute("list", list);
+      return "marker/markerList";
+   }
+   
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker ReadOne method , GET()
+    * Param : String, Model
+    * return : String
+    */
+   //@GetMapping("/readone")
+   public String markerReadOne(@RequestParam("id") String markerid, Model model) {
+      System.out.println("readone IN : "+markerid);
+      Marker marker = markerService.markerReadOne(markerid);
+      model.addAttribute("marker",marker);
+      
+      return "marker/markerInfo";
+   }
+   
+   //-------   UPDATE   -------
+
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker Update¸¦ À§ÇÑ Æûview·Î ÀÌµ¿ , GET()
+    * Param : String, Model
+    * return : String
+    */   
+   //@GetMapping("/update")
+   public String markerUpdateView(@RequestParam("id") String markerId, Model model) {
+      System.out.println("update IN : "+markerId);
+      Marker marker = markerService.markerReadOne(markerId);
+      
+      model.addAttribute("UpdateMarker", new Marker());
+      model.addAttribute("marker", marker);
+      System.out.println("update end return");
+      
+      return "marker/updateForm";
+   }
+
+   /*
+    * 2024.12.02 
+    * editor : KYEONGMIN
+    * Marker Update Æû ÀÛ¼º ÈÄ ½ÇÁ¦ »ğÀÔÀ» À§ÇÑ DB¿¬°á method , POST()
+    * Param : Marker, HttpServletRequest
+    * return : String
+    */   
+
+//   @PostMapping("/update")
+   public String markerUpdateExecute(@ModelAttribute("UpdateMarker") Marker marker, HttpServletRequest req) {
+      System.out.println("update Execute IN");
+      String realpath = req.getServletContext().getRealPath("resources/images"); 
+      System.out.println("image name : "+marker.getImageName());
+      
+      MultipartFile mpf = marker.getImage();
+      if(mpf != null && !mpf.isEmpty()) {
+         String imagename = mpf.getOriginalFilename();
+         File f = new File(realpath,imagename);
+         try {
+            mpf.transferTo(f);
+            marker.setImageName(imagename);
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+      }
+      markerService.markerUpdate(marker);
+      return "redirect:home";
+   }
+   
+   @ResponseBody
+   @PostMapping("/jsonrdall")
+   public List<Marker> getAllMarker(){
+      List<Marker> list = markerService.markerReadAll();
+            
+      return list;
+   }
+   
+
+   //-------   DELETE   -------
+   
 }
