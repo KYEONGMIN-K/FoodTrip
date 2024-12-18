@@ -7,7 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<a href="makeRoad">코스 생성</a>
-	<a href="readRoad">코스 전체보기</a>
+<a href="https://www.flaticon.com/kr/free-icons/-" title="지도 및 위치 아이콘">지도 및 위치 아이콘 제작자: Rooman12 - Flaticon</a>
 </body>
 </html>

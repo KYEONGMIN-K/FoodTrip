@@ -36,29 +36,242 @@ public class MarkerController {
 	private static final String hotelId = "HT";
 	private static final String tourId = "TU";
 	
+	//ajax 요청응답을 위해 사용
 	Gson g = new Gson();
 	
 	@Autowired
 	private MarkerService markerService;
 	
-	@GetMapping("/test")
+	//-------   CREATE   -------
+	
+	/*
+	 * 2024.12.07 
+	 * editor : KYEONGMIN
+	 * Marker 생성 Form View로 이동 , GET() 
+	 * Param : none
+	 * return : String
+	 */
+	@GetMapping("/addMarker")
 	public String markertest() {
 		return "marker/addMarkerJS";
 	}
 	
 	/*
-	 * 2024.12.02 
-	 * Marker home view method , GET()
+	 * 2024.12.08
 	 * editor : KYEONGMIN
-	 * Param : none
+	 * Marker 생성 Form 입력 후 ajax를 통해 발생된 요청을 받은 후 DB로 입력 , POST() 
+	 * Param : HashMap<String, Object>, HttpSerlvetRequest
 	 * return : String
 	 */
-	@GetMapping("/home")
-	public String markerhome() {
-		return "markerhome";
+	@ResponseBody
+	@PostMapping("/addMarker")
+	public String addMarker(@RequestBody HashMap<String, Object> map, HttpServletRequest req) {
+//		System.out.println(map);
+
+		Marker marker = new Marker();
+		//marker.setmarkerId("TEST");
+		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
+		marker.setPointY(Double.parseDouble((String)map.get("pointY")));
+		marker.setPointName((String)map.get("pointName"));
+		marker.setAddress((String)map.get("address"));
+		marker.setPhone((String)map.get("phone"));
+		marker.setCategory((String)map.get("category"));
+		marker.setDescription((String)map.get("description"));
+		String pname = marker.getPointName();
+		String paddr = marker.getAddress();
+		
+		//	중복 확인
+		Boolean ie = markerService.isExist(pname, paddr);
+		if(ie) {
+			return null;
+		}
+		//카테고리에 따라 마커 분류
+		String tmp = marker.getCategory();
+		tmp = tmp.replaceAll("\\s+", "");
+		String cate[] = tmp.split(">");
+		String result[] = cate[1].split(",");
+		
+		for(int i=0; i<cate.length; i++)
+			System.out.println(cate[i]);
+		//카테고리에 따라 ID부여
+		if(cate[0].equals("음식점")) {
+			//System.out.println(restId+numToStr);
+			marker.setmarkerId(restId);
+		}else { 
+			if(result[0].equals("관광")){
+				marker.setmarkerId(tourId);
+			}else if(result[0].equals("숙박")) {
+				marker.setmarkerId(hotelId);
+			}
+		}
+		
+		String realPath = req.getServletContext().getRealPath("resources/images");
+		//System.out.println(realPath);
+		MultipartFile file = marker.getImage();
+		String imageName = null;
+		File f = null;
+		if(file !=null) {
+			imageName= file.getOriginalFilename();
+			f = new File(realPath, imageName);
+		}
+		if(imageName != null && !imageName.isEmpty()) {
+			try {
+				System.out.println("imageName null 아님");
+				file.transferTo(f);
+				System.out.println("파일 trans완료");
+				marker.setImageName(imageName);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		markerService.markerCreate(marker);
+		
+		return "success";
 	}
 	
 	
+	
+	//-------   READ   -------	
+	
+	/*
+	 * 2024.12.09
+	 * Editor : KYEONGMIN
+	 * Description : Marker 리스트 View로 이동하는 메서드 : GET()
+	 * Param : Model
+	 * Return : ResponseEntity<String>
+	 */
+	@GetMapping("/readalljson")
+	public String readjson() {
+		return "marker/markerListJS";
+	}
+	
+	
+	/*
+	 * 2024.12.09
+	 * Editor : KYEONGMIN
+	 * Description : Marker의 전체 리스트를 ajax로부터 요청 받아 JSON으로 돌려주는 메서드
+	 * Param : Model
+	 * Return : ResponseEntity<String>
+	 */	
+	@GetMapping("/readMkAll")
+	@ResponseBody
+	public ResponseEntity<String> readMarkerAll(Model model) {
+		System.out.println("readall IN");
+		
+		List<Marker> list = markerService.markerReadAll();
+		System.out.println("readAll list get");
+		
+		model.addAttribute("list", list);
+		//Map<String, Marker>[] a = new HashMap<String, Marker>();
+		/*
+		 * list는 dto를 가지고 있는 배열.
+		 * 배열 하나하나는 dto의 주소를 담고 있다. 배열을 따라가면 dto가 나온다.
+		 * list[0]은 dto를 가리키며 list[0].getxxx()을 통해 해당 dto의 값을 가져올 수 있다.
+		 * */
+	//	Map<String, String> result = new HashMap();
+		String listJson = g.toJson(list);
+		//System.out.println(listJson);
+		
+		//한글 깨짐 방지
+		 HttpHeaders headers = new HttpHeaders();
+		 headers.setContentType(MediaType.APPLICATION_JSON);
+		 headers.set("Content-Type", "application/json; charset=UTF-8");
+		
+		return new ResponseEntity<>(listJson, headers, HttpStatus.OK);
+	}	
+		
+	//-------   UPDATE   -------
+	
+	/*
+	 * 2024. 12. 07 
+	 * Editor : KYEONGMIN
+	 * Description : Marker Update 폼 이동
+	 * Param : String, Model
+	 * return : String
+	 */
+	@GetMapping("/markerUpdate")
+	public String markerEditView(@RequestParam("id") String markerId,Model model){
+		System.out.println("Marker Edit IN");
+		Marker marker = new Marker();
+		marker = markerService.markerReadOne(markerId);
+		model.addAttribute("marker", marker);
+		
+		return "marker/markerEditForm";
+	}
+	
+	/*
+	 * 2024. 12. 07 
+	 * Editor : KYEONGMIN
+	 * Description : Marker Update 수정 후 ajax를 통해 들어온 데이터 
+	 * Param : String, Model
+	 * return : String
+	 */
+	@ResponseBody
+	@PostMapping("/editexecute")
+	public String markerEditExecute(@RequestBody HashMap<String, Object> map) {
+		System.out.println("edit execute in");
+		System.out.println(map.get("pointName"));
+		System.out.println(map.get("markerId"));
+		//전처리
+		Marker marker = new Marker();
+		marker.setmarkerId((String)map.get("markerId"));
+		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
+		marker.setPointY(Double.parseDouble((String)map.get("pointY")));
+		marker.setPointName((String)map.get("pointName"));
+		marker.setAddress((String)map.get("address"));
+		marker.setPhone((String)map.get("phone"));
+		marker.setCategory((String)map.get("category"));
+		marker.setDescription((String)map.get("description"));
+
+		//모델이동
+		markerService.markerUpdate(marker);
+		//리턴
+		
+		return "good";
+	}
+	
+	//-------   DELETE   -------	
+	
+	/*
+	 * 2024.12.02 
+	 * editor : KYEONGMIN
+	 * Marker delete method  , GET()
+	 * Param : String
+	 * return : String
+	 */
+	@GetMapping("/delete")
+	public String markerDelete(@RequestParam("id") String markerId) {
+		System.out.println("delete IN"+markerId);
+		
+		markerService.markerDelete(markerId);
+		
+		return "redirect:readalljson";
+	}
+	
+	
+	
+	/*
+	@ResponseBody
+	@PostMapping("/jsonrdall")
+	public List<Marker> getAllMarker(){
+		List<Marker> list = markerService.markerReadAll();
+				
+		return list;
+	}
+	*/
+	//===================================== 아래는 JSP 동작 (현재 사용하진 않음) =========================================
+	
+	/*
+	 * 2024.12.02 
+	 * editor : KYEONGMIN
+	 * Marker Update 폼 작성 후 실제 삽입을 위한 DB연결 method , POST()
+	 * Param : Marker, HttpServletRequest
+	 * return : String
+	 */	
+	
+	//-------   CREATE   -------
+
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
@@ -66,7 +279,7 @@ public class MarkerController {
 	 * Param : Model
 	 * return : String
 	 */
-	@GetMapping("/create")
+	//@GetMapping("/create")
 	public String markerCreate(Model model) {
 		model.addAttribute("NewMarker", new Marker());
 		
@@ -105,78 +318,7 @@ public class MarkerController {
 		return "redirect:home";
 	}
 	
-	@ResponseBody
-	@PostMapping("/addMarker")
-	public ResponseEntity<Map<String, String>> addMarker(@RequestBody HashMap<String, Object> map, HttpServletRequest req) {
-		System.out.println(map);
-		//만약 같은 데이터가 들어온다면
-		
-		
-		//전처리
-		Map<String, String> saveSearch = new HashMap(); 
-		saveSearch.put("inputdata", (String)map.get("inputdata"));
-		
-		System.out.println((String)map.get("inputdata"));
-		Marker marker = new Marker();
-		//marker.setmarkerId("TEST");
-		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
-		marker.setPointY(Double.parseDouble((String)map.get("pointY")));
-		marker.setPointName((String)map.get("pointName"));
-		marker.setAddress((String)map.get("address"));
-		marker.setPhone((String)map.get("phone"));
-		marker.setCategory((String)map.get("category"));
-		marker.setDescription((String)map.get("description"));
-		String pname = marker.getPointName();
-		String paddr = marker.getAddress();
-		
-		Boolean ie = markerService.isExist(pname, paddr);
-		if(ie) {
-			return null;
-		}
-		//카테고리에 따라 마커 분류
-		String tmp = marker.getCategory();
-		tmp = tmp.replaceAll("\\s+", "");
-		String cate[] = tmp.split(">");
-		String result[] = cate[1].split(",");
-		
-		for(int i=0; i<cate.length; i++)
-			System.out.println(cate[i]);
-		//카테고리에 따라 ID부여
-		if(cate[0].equals("음식점")) {
-			//System.out.println(restId+numToStr);
-			marker.setmarkerId(restId);
-		}else { 
-			if(result[0].equals("관광")){
-				marker.setmarkerId(tourId);
-			}else if(result[0].equals("숙박")) {
-				marker.setmarkerId(hotelId);
-			}
-		}
-		
-		String realPath = req.getServletContext().getRealPath("resources/images");
-		System.out.println(realPath);
-		MultipartFile file = marker.getImage();
-		String imageName = null;
-		File f = null;
-		if(file !=null) {
-			imageName= file.getOriginalFilename();
-			f = new File(realPath, imageName);
-		}
-		if(imageName != null && !imageName.isEmpty()) {
-			try {
-				System.out.println("imageName null 아님");
-				file.transferTo(f);
-				System.out.println("파일 trans완료");
-				marker.setImageName(imageName);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		markerService.markerCreate(marker);
-		
-		return ResponseEntity.ok(saveSearch);
-	}
+	//-------   READ   -------	
 	
 	/*
 	 * 2024.12.02 
@@ -185,7 +327,7 @@ public class MarkerController {
 	 * Param : Model
 	 * return : String
 	 */
-	@GetMapping("/readall")
+	//@GetMapping("/readall")
 	public String markerReadAll(Model model) {
 		System.out.println("readall IN");
 		List<Marker> list = markerService.markerReadAll();
@@ -194,36 +336,6 @@ public class MarkerController {
 		return "marker/markerList";
 	}
 	
-	
-	
-	@GetMapping("/readMkAll")
-	@ResponseBody
-	public ResponseEntity<String> readMarkerAll(Model model) {
-		System.out.println("readall IN");
-		
-		List<Marker> list = markerService.markerReadAll();
-		System.out.println("readAll list get");
-		
-		model.addAttribute("list", list);
-		//Map<String, Marker>[] a = new HashMap<String, Marker>();
-		/*
-		 * list는 dto를 가지고 있는 배열.
-		 * 배열 하나하나는 dto의 주소를 담고 있다. 배열을 따라가면 dto가 나온다.
-		 * list[0]은 dto를 가리키며 list[0].getxxx()을 통해 해당 dto의 값을 가져올 수 있다.
-		 * */
-	//	Map<String, String> result = new HashMap();
-		String listJson = g.toJson(list);
-		//System.out.println(listJson);
-		
-		//한글 깨짐 방지
-		 HttpHeaders headers = new HttpHeaders();
-		 headers.setContentType(MediaType.APPLICATION_JSON);
-		 headers.set("Content-Type", "application/json; charset=UTF-8");
-		
-		return new ResponseEntity<>(listJson, headers, HttpStatus.OK);
-	}
-	
-	
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
@@ -231,7 +343,7 @@ public class MarkerController {
 	 * Param : String, Model
 	 * return : String
 	 */
-	@GetMapping("/readone")
+	//@GetMapping("/readone")
 	public String markerReadOne(@RequestParam("id") String markerid, Model model) {
 		System.out.println("readone IN : "+markerid);
 		Marker marker = markerService.markerReadOne(markerid);
@@ -240,6 +352,8 @@ public class MarkerController {
 		return "marker/markerInfo";
 	}
 	
+	//-------   UPDATE   -------
+
 	/*
 	 * 2024.12.02 
 	 * editor : KYEONGMIN
@@ -259,14 +373,6 @@ public class MarkerController {
 		return "marker/updateForm";
 	}
 	
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker Update 폼 작성 후 실제 삽입을 위한 DB연결 method , POST()
-	 * Param : Marker, HttpServletRequest
-	 * return : String
-	 */	
 //	@PostMapping("/update")
 	public String markerUpdateExecute(@ModelAttribute("UpdateMarker") Marker marker, HttpServletRequest req) {
 		System.out.println("update Execute IN");
@@ -288,75 +394,7 @@ public class MarkerController {
 		return "redirect:home";
 	}
 	
+	//-------   DELETE   -------
 	
-	@GetMapping("/markerUpdate")
-	public String markerEditView(@RequestParam("id") String markerId,Model model){
-		System.out.println("Marker Edit IN");
-		Marker marker = new Marker();
-		marker = markerService.markerReadOne(markerId);
-		model.addAttribute("marker", marker);
-		
-		return "marker/markerEditForm";
-	}
-	
-	
-	@ResponseBody
-	@PostMapping("/editexecute")
-	public String markerEditExecute(@RequestBody HashMap<String, Object> map) {
-		System.out.println("edit execute in");
-		System.out.println(map.get("pointName"));
-		System.out.println(map.get("markerId"));
-		//전처리
-		Marker marker = new Marker();
-		marker.setmarkerId((String)map.get("markerId"));
-		marker.setPointX(Double.parseDouble((String)map.get("pointX")));
-		marker.setPointY(Double.parseDouble((String)map.get("pointY")));
-		marker.setPointName((String)map.get("pointName"));
-		marker.setAddress((String)map.get("address"));
-		marker.setPhone((String)map.get("phone"));
-		marker.setCategory((String)map.get("category"));
-		marker.setDescription((String)map.get("description"));
-
-		//모델이동
-		markerService.markerUpdate(marker);
-		//리턴
-		
-		return "good";
-	}
-	
-	
-	/*
-	 * 2024.12.02 
-	 * editor : KYEONGMIN
-	 * Marker delete method  , GET()
-	 * Param : String
-	 * return : String
-	 */
-	@GetMapping("/delete")
-	public String markerDelete(@RequestParam("id") String markerId) {
-		System.out.println("delete IN"+markerId);
-		
-		markerService.markerDelete(markerId);
-		
-		return "redirect:readalljson";
-	}
-	
-	/*
-	 * JSON READ
-	 * 
-	 * */
-	@GetMapping("/readalljson")
-	public String readjson() {
-		return "marker/markerListJS";
-	}
-	
-	
-	@ResponseBody
-	@PostMapping("/jsonrdall")
-	public List<Marker> getAllMarker(){
-		List<Marker> list = markerService.markerReadAll();
-				
-		return list;
-	}
 	
 }

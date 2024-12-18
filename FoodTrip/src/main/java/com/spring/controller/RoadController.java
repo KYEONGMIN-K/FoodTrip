@@ -43,30 +43,11 @@ public class RoadController {
 	@Autowired
 	private RoadService roadService;
 	
+	//-------   CREATE   -------
 	
-	@GetMapping("/home")
-	public String roadhome() {
-		return "roadhome";
-	}
-
 	@GetMapping("/makeRoad")
 	public String createRoad() {
 		return "road/roadMake";
-	}
-
-	@GetMapping("/readMkAll")
-	@ResponseBody
-	public ResponseEntity<String> roadReadAll(Model model) {
-		List<Marker> list = markerService.markerReadAll();
-		
-		String listJson = g.toJson(list);
-		model.addAttribute(list);
-		//한글 깨짐 방지
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Content-Type", "application/json; charset=UTF-8");
-		
-		return new ResponseEntity<>(listJson, headers, HttpStatus.OK);
 	}
 	
 	@PostMapping("/addCourse")
@@ -117,6 +98,8 @@ public class RoadController {
 		return "success";
 	}
 	
+	//-------   READ   -------
+
 	//Road Read ALL
 	@GetMapping("/readRoad")
 	public String getAllRoad() {
@@ -124,7 +107,24 @@ public class RoadController {
 		
 		return "road/roadreadall";
 	}
-
+	
+	//Read All Marker
+	@GetMapping("/readMkAll")
+	@ResponseBody
+	public ResponseEntity<String> roadReadAll(Model model) {
+		List<Marker> list = markerService.markerReadAll();
+		
+		String listJson = g.toJson(list);
+		model.addAttribute(list);
+		//한글 깨짐 방지
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Content-Type", "application/json; charset=UTF-8");
+		
+		return new ResponseEntity<>(listJson, headers, HttpStatus.OK);
+	}
+	
+	
 	//Road Read ALL
 	@PostMapping("/readRoad")
 	@ResponseBody
@@ -188,6 +188,8 @@ public class RoadController {
 		roadOne.setPoints(find);
 	}
 	
+	
+	
 	//Road Read One
 	@GetMapping("/roadUpdate")
 	public String roadupdate(@RequestParam("id") String roadId, Model model) {
@@ -218,6 +220,7 @@ public class RoadController {
 		return new ResponseEntity<>(itemJson, headers, HttpStatus.OK);
 	}
 	
+	//-------   UPDATE   -------
 	@PostMapping("/roadUpExe")
 	@ResponseBody
 	public String roadUpdateExecute(@RequestBody Map<String, Object> map) {
@@ -236,7 +239,8 @@ public class RoadController {
 		
 		return "end"; 
 	}
-	
+
+	//-------   DELETE   -------
 	@GetMapping("/roadDelete")
 	public String roaddelete(@RequestParam("id") String id) {
 		System.out.println("삭제할 id : "+id);
